@@ -270,7 +270,7 @@
 
       '<div class="marquee" aria-hidden="true"><div class="mq-track" data-marquee>' + marquee + '</div></div>' +
 
-      '<section class="wrap" style="padding-top: 160px; padding-bottom: 120px"><p class="words" data-words aria-label="' + esc(D.words) + '">' + words + '</p></section>' +
+      '<section class="wrap sec-words" style="padding-top: 160px; padding-bottom: 120px"><p class="words" data-words aria-label="' + esc(D.words) + '">' + words + '</p></section>' +
 
       '<section class="pin" data-pin style="height: 3000px"><div class="pin-sticky"><div class="wrap story-grid">' +
         '<div style="display: flex; flex-direction: column; gap: 28px">' +
@@ -295,7 +295,7 @@
         '</div></div>' +
       '</div></div></section>' +
 
-      '<section id="demo" class="wrap" style="padding-top: 140px"><div class="demo-grid">' +
+      '<section id="demo" class="wrap sec-md" style="padding-top: 140px"><div class="demo-grid">' +
         '<div style="display: flex; flex-direction: column; gap: 22px" data-reveal>' +
           '<div class="kicker">Попробуй прямо здесь</div>' +
           '<h2 class="serif h-sec">Смахни карточку — как в Мнеме.</h2>' +
@@ -316,7 +316,7 @@
         '</div>' +
       '</div></section>' +
 
-      '<section class="wrap" style="padding-top: 160px">' +
+      '<section class="wrap sec-lg" style="padding-top: 160px">' +
         '<div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; max-width: 760px" data-reveal><div class="kicker">Всё для учёбы</div><h2 class="serif h-sec">Одно приложение вместо тетради, флешкарт и будильника.</h2></div>' +
         '<div class="bento">' +
           '<article class="tile t-4" data-tilt data-reveal><h3>Фото учебника → конспект</h3><p>Сфотографируй страницы — Мнема распознает текст даже без интернета, найдёт жирное, рисунки и рамки «Запомните».</p>' +
@@ -332,7 +332,7 @@
           '<article class="tile t-2" data-tilt data-reveal><h3>Стихи наизусть</h3><p>Подсказки тают до первых букв.</p>' +
             '<div class="viz" style="display: flex; align-items: center"><div class="poem"><div class="full">Я помню чудное мгновенье:<br>Передо мной явилась ты,</div><div class="cue" aria-hidden="true">Я п… ч… м…:<br>П… м… я… т…,</div></div></div>' +
             arrowFeat('learn') + '</article>' +
-          '<article class="tile t-2" data-tilt data-reveal><h3>Синхронизация по Wi-Fi</h3><p>Код из 12 знаков, всё шифруется AES-GCM.</p>' +
+          '<article class="tile t-2" data-tilt data-reveal><h3>Синхронизация по Wi\u2011Fi</h3><p>Код из 12 знаков, всё шифруется AES-GCM.</p>' +
             '<div class="viz" style="display: flex; flex-direction: column; justify-content: center; gap: 18px"><div class="code">K7QM-2XPA-9RTD</div><div class="wire">' +
               '<span class="dev"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path></svg></span>' +
               '<span class="wire-line"><span class="packet"></span><span class="packet"></span><span class="packet"></span></span>' +
@@ -347,7 +347,7 @@
         '</div>' +
       '</section>' +
 
-      '<section class="wrap" style="padding-top: 160px">' +
+      '<section class="wrap sec-lg" style="padding-top: 160px">' +
         '<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px" data-reveal>' +
           '<div style="display: flex; flex-direction: column; gap: 16px; max-width: 680px"><div class="kicker">Карта знаний</div><h2 class="serif h-sec">Потяни любой узел.</h2>' +
           '<p class="lead">Предметы → темы → понятия. Общие понятия связывают темы разных предметов, слабые места подсвечены. Нажми на узел — увидишь, с чем он связан.</p></div>' +
@@ -359,7 +359,7 @@
         '</div>' +
       '</section>' +
 
-      '<section class="wrap" style="padding-top: 160px">' +
+      '<section class="wrap sec-lg" style="padding-top: 160px">' +
         '<div class="cta" data-spot data-reveal>' +
           '<button type="button" class="mlogo-big" data-logo data-act="logo" aria-label="Мнема — показать анимацию логотипа"><span class="mlogo auto" aria-hidden="true"><span class="mlogo-bg"></span><svg viewBox="0 0 32 32"><path d="M8 23 V9.5 L16 18.5 L24 9.5 V23"></path></svg><span class="mlogo-dot"></span></span></button>' +
           '<h2 class="serif h-large" style="max-width: 860px">Учёба, которая остаётся в голове.</h2>' +
@@ -454,7 +454,7 @@
       '<div class="ptitle"><div class="kicker">Возможности</div><h1 class="serif h-large">Всё, что нужно,<br>и ничего лишнего.</h1>' +
       '<p class="lead">В интерфейсе нет «cloze», «FSRS» и «retention» — есть «пропуск», «расписание повторений» и «как сильно запоминать». Нажми на карточку, чтобы узнать больше.</p></div>' +
       '<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin: 40px 0 28px">' +
-        '<div class="seg" role="tablist" aria-label="Категории" style="grid-template-columns: repeat(5, auto)"><span class="seg-thumb" data-seg-thumb></span>' + segsHtml + '</div>' +
+        '<div class="seg seg-5" role="tablist" aria-label="Категории" style="grid-template-columns: repeat(5, auto)"><span class="seg-thumb" data-seg-thumb></span>' + segsHtml + '</div>' +
         '<label class="search">' + SVG.search + '<span class="sr-only">Поиск по возможностям</span><input type="search" placeholder="Поиск: формулы, Anki, Wi-Fi…" value="' + esc(S.query) + '" data-input="query"></label>' +
       '</div>' +
       '<div class="fgrid" id="fgrid" data-fgrid></div>' +
@@ -583,20 +583,20 @@
         '<div class="curve-box" data-curve>' +
           '<svg viewBox="0 0 800 340" preserveAspectRatio="none" aria-hidden="true">' +
             '<line x1="48" y1="20" x2="780" y2="20" style="stroke: var(--line)"></line><line x1="48" y1="160" x2="780" y2="160" style="stroke: var(--line)"></line><line x1="48" y1="300" x2="780" y2="300" style="stroke: var(--line2)"></line>' +
-            '<text x="0" y="25" font-size="13" style="fill: var(--ink3)">100%</text><text x="8" y="165" font-size="13" style="fill: var(--ink3)">50%</text><text x="20" y="305" font-size="13" style="fill: var(--ink3)">0%</text>' +
-            '<text x="44" y="330" font-size="13" style="fill: var(--ink3)">0</text><text x="282" y="330" font-size="13" style="fill: var(--ink3)">10 дней</text><text x="526" y="330" font-size="13" style="fill: var(--ink3)">20 дней</text><text x="740" y="330" font-size="13" style="fill: var(--ink3)">30</text>' +
             '<path data-c="base" fill="none" style="stroke: var(--warm)" stroke-width="2.5" stroke-dasharray="6 6"></path>' +
             '<path data-c="area" style="fill: var(--accent-soft)" stroke="none"></path>' +
             '<path data-c="line" fill="none" style="stroke: var(--accent-text)" stroke-width="3.5" stroke-linejoin="round"></path>' +
           '</svg>' +
+          '<span class="cax y" style="top: 5.9%">100%</span><span class="cax y" style="top: 47.1%">50%</span><span class="cax y" style="top: 88.2%">0%</span>' +
+          '<span class="cax x first" style="left: 6%">0</span><span class="cax x" style="left: 36.5%">10 дней</span><span class="cax x" style="left: 67%">20 дней</span><span class="cax x" style="left: 94%">30</span>' +
         '</div>' +
         '<div class="readout"><div><b class="accent-text" data-c-with></b><span class="small">помнишь на 30-й день · повторений: <span data-c-count></span></span></div>' +
           '<div><b style="color: var(--warm-text)" data-c-without></b><span class="small">без повторений</span></div>' +
           '<p class="small" style="max-width: 360px">Модель для наглядности: R = e^(−t/S), каждое повторение увеличивает прочность S. В Мнеме расписание считает алгоритм FSRS по твоим ответам.</p></div>' +
       '</section>' +
-      '<section style="margin-top: 120px"><div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px" data-reveal><div class="kicker">Приёмы</div><h2 class="serif h-sec">Каждый — уже внутри Мнемы.</h2><p class="lead">Нажми на карточку: на обороте — где этот приём в приложении.</p></div>' +
+      '<section class="sec-gap" style="margin-top: 120px"><div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px" data-reveal><div class="kicker">Приёмы</div><h2 class="serif h-sec">Каждый — уже внутри Мнемы.</h2><p class="lead">Нажми на карточку: на обороте — где этот приём в приложении.</p></div>' +
         '<div class="mgrid">' + methods + '</div></section>' +
-      '<section style="margin-top: 120px"><div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px" data-reveal><div class="kicker">Мифов нет</div><h2 class="serif h-sec">Что не работает — и что вместо.</h2></div>' +
+      '<section class="sec-gap" style="margin-top: 120px"><div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px" data-reveal><div class="kicker">Мифов нет</div><h2 class="serif h-sec">Что не работает — и что вместо.</h2></div>' +
         '<div style="display: flex; flex-direction: column; gap: 12px">' + myths + '</div>' +
         '<p class="small" style="margin-top: 28px; max-width: 820px">Источники: Dunlosky и др., 2013; Cepeda и др., 2008; Pashler и др., 2008; Rawson и Dunlosky; AFT «Strengthening the Student Toolbox»; руководство Anki по FSRS.</p></section>' +
     '</main>';
@@ -689,7 +689,7 @@
       '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(2, 150px); margin-top: 8px"><span class="seg-thumb" data-plat-thumb style="width: 150px"></span>' +
         '<button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button></div></div>' +
       '<div class="dl-grid" style="margin-top: 56px">' +
-        '<div class="dev-stage"><div class="device" data-dev><div class="screen" data-screen>' +
+        '<div class="dev-stage" data-dev-stage><div class="device" data-dev><div class="screen" data-screen>' +
           '<div class="app-side" data-side><b style="font-size: 13px; display: flex; gap: 6px; align-items: center"><span class="logo" style="width: 20px; height: 20px; border-radius: 6px; font-size: 12px">М</span>Мнема</b>' +
             '<span style="width: 80%; margin-top: 8px"></span><span style="width: 64%"></span><span style="width: 72%"></span><span style="width: 56%"></span><span style="width: 68%"></span></div>' +
           '<div class="app-main"><div style="display: flex; justify-content: space-between; align-items: baseline"><b class="serif" style="font-size: 24px">Сегодня</b><span style="font-size: 12px; color: #64666F">ждут повторения</span></div>' +
@@ -701,7 +701,7 @@
           '<div data-plat-steps></div>' +
           '<div style="display: flex; gap: 12px; flex-wrap: wrap"><a class="btn btn-primary" data-magnet data-plat-cta href="' + RELEASES + '"></a><a class="btn btn-ghost" href="https://github.com/' + REPO + '">Исходный код</a></div></div>' +
       '</div>' +
-      '<section style="margin-top: 120px; max-width: 760px; margin-left: auto; margin-right: auto"><h2 class="serif h-sec" style="margin-bottom: 24px" data-reveal>Частые вопросы</h2>' +
+      '<section class="sec-gap" style="margin-top: 120px; max-width: 760px; margin-left: auto; margin-right: auto"><h2 class="serif h-sec" style="margin-bottom: 24px" data-reveal>Частые вопросы</h2>' +
         '<div class="ios-group" style="background: var(--surface); border: 1px solid var(--line)">' + D.faq.map(function (f, i) {
           return '<div class="ios-row" style="flex-direction: column; align-items: stretch; padding: 0">' + accordion({
             cls: 'myth-q', style: 'font-size: 17px; padding: 18px 18px', rot: 90, open: i === 0,
@@ -715,8 +715,9 @@
   function applyPlat(first) {
     var win = S.plat === 'win', q = function (s) { return $(s, app); };
     var dev = q('[data-dev]'); if (!dev) return;
+    fitDevice();
     q('[data-dl-kicker]').textContent = 'Скачать · версия ' + relVer();
-    if (first) $$('[data-dev],[data-screen],[data-side],[data-base],[data-tabs]', app).forEach(function (el) { el.style.transition = 'none'; });
+    if (first) $$('[data-dev-stage],[data-dev],[data-screen],[data-side],[data-base],[data-tabs]', app).forEach(function (el) { el.style.transition = 'none'; });
     q('[data-plat-thumb]').style.transform = 'translateX(' + (win ? 0 : 150) + 'px)';
     $$('[data-plat]', app).forEach(function (b) {
       var on = b.getAttribute('data-plat') === S.plat;
@@ -727,7 +728,7 @@
     var side = q('[data-side]'); side.style.width = win ? '150px' : '0px'; side.style.opacity = win ? 1 : 0; side.style.padding = win ? '14px 10px' : '14px 0px';
     var base = q('[data-base]'); base.style.width = win ? '118%' : '0%'; base.style.opacity = win ? 1 : 0;
     var tabs = q('[data-tabs]'); tabs.style.opacity = win ? 0 : 1; tabs.style.transform = win ? 'translateY(30px)' : 'translateY(0px)';
-    if (first) { void dev.offsetWidth; $$('[data-dev],[data-screen],[data-side],[data-base],[data-tabs]', app).forEach(function (el) { el.style.transition = ''; }); }
+    if (first) { void dev.offsetWidth; $$('[data-dev-stage],[data-dev],[data-screen],[data-side],[data-base],[data-tabs]', app).forEach(function (el) { el.style.transition = ''; }); }
     q('[data-plat-title]').textContent = win ? 'Для Windows' : 'Для Android';
     q('[data-plat-steps]').innerHTML = win ?
       '<ol class="steps"><li><span><b>Скачай установщик</b><br><span class="muted mono" style="font-size: 14px">' + esc(relFile('win')) + '</span></span></li>' +
@@ -738,6 +739,17 @@
       '<li><span><b>Перенеси карточки с компьютера</b><br><span class="muted">По Wi-Fi: код из 12 знаков или QR — и готово.</span></span></li></ol>';
     var cta = q('[data-plat-cta]'); cta.textContent = win ? 'Скачать Mnema-Setup.exe' : 'Скачать APK';
     cta.setAttribute('href', relUrl(win ? 'win' : 'android'));
+  }
+
+  // макет устройства уменьшается, чтобы помещаться в узкий экран
+  function fitDevice() {
+    var st = $('[data-dev-stage]', app), dev = $('[data-dev]', app);
+    if (!st || !dev) return;
+    var win = S.plat === 'win', dw = win ? 560 : 270, dh = win ? 360 : 540;
+    var k = Math.min(1, st.clientWidth / dw);
+    dev.style.transform = k < 1 ? 'scale(' + k.toFixed(3) + ')' : '';
+    if (k < 1) { st.style.height = Math.round((dh + 20) * k + 24) + 'px'; st.style.alignItems = 'start'; }
+    else { st.style.height = ''; st.style.alignItems = ''; }
   }
 
   // ───── выпуск с GitHub ─────
@@ -953,9 +965,11 @@
 
   // ───── указатель ─────
   function pointerMove(e) {
-    A.px = e.clientX; A.py = e.clientY;
-    var w = window.innerWidth || 1, h = window.innerHeight || 1;
-    A.tmx = e.clientX / w - 0.5; A.tmy = Math.min(1, e.clientY / Math.min(h, 1000)) - 0.5;
+    if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+      A.px = e.clientX; A.py = e.clientY;
+      var w = window.innerWidth || 1, h = window.innerHeight || 1;
+      A.tmx = e.clientX / w - 0.5; A.tmy = Math.min(1, e.clientY / Math.min(h, 1000)) - 0.5;
+    }
     var dr = A.drag;
     if (dr) {
       dr.dx = e.clientX - dr.x0; dr.dy = e.clientY - dr.y0;
@@ -1165,6 +1179,7 @@
     var r = box.getBoundingClientRect();
     if (r.bottom < 0 || r.top > window.innerHeight) return;
     var W = r.width, H = r.height, N = E.gNodes.length, Ed = D.gEdges;
+    var narrow = W < 560, padB = narrow ? 140 : 0, sk = narrow ? clamp(W / 560, 0.7, 1) : 1, rk = narrow ? 3.2 : 1;
     if (!A.gp || A.gW !== W) {
       A.gW = W;
       A.gp = D.gNodes.map(function (n, i) {
@@ -1175,25 +1190,25 @@
     var P = A.gp, F = P.map(function () { return [0, 0]; });
     for (var i = 0; i < N; i++) for (var j = i + 1; j < N; j++) {
       var dx = P[j].x - P[i].x, dy = (P[j].y - P[i].y) * 1.6, d2 = dx * dx + dy * dy + 0.01, d = Math.sqrt(d2);
-      var f = Math.min(6, 16000 / d2);
+      var f = Math.min(7, 16000 * rk / d2);
       F[i][0] -= dx / d * f; F[i][1] -= dy / d * f; F[j][0] += dx / d * f; F[j][1] += dy / d * f;
     }
     Ed.forEach(function (e) {
       var a = e[0], b = e[1];
       var dx = P[b].x - P[a].x, dy = P[b].y - P[a].y, d = Math.hypot(dx, dy) || 1;
-      var L = (D.gNodes[a].s || D.gNodes[b].s) ? 130 : 105, k = (d - L) * 0.012;
+      var L = ((D.gNodes[a].s || D.gNodes[b].s) ? 130 : 105) * sk, k = (d - L) * 0.012;
       F[a][0] += dx / d * k; F[a][1] += dy / d * k; F[b][0] -= dx / d * k; F[b][1] -= dy / d * k;
     });
     for (var q = 0; q < N; q++) {
       var n = P[q];
-      F[q][0] += (W / 2 - n.x) * 0.0016; F[q][1] += (H / 2 - n.y) * 0.003;
+      F[q][0] += (W / 2 - n.x) * 0.0016; F[q][1] += ((H - padB) / 2 - n.y) * 0.003;
       F[q][0] += Math.sin(t / 1400 + q * 2.1) * 0.03 * m; F[q][1] += Math.cos(t / 1700 + q) * 0.03 * m;
       if (A.gdrag && A.gdrag.i === q) continue;
       n.vx = (n.vx + F[q][0]) * 0.86; n.vy = (n.vy + F[q][1]) * 0.86;
       n.x += n.vx; n.y += n.vy;
       var hw = (n.w || 80) / 2 + 8, hh = (n.h || 36) / 2 + 8;
       if (n.x < hw) { n.x = hw; n.vx *= -0.5; } if (n.x > W - hw) { n.x = W - hw; n.vx *= -0.5; }
-      if (n.y < hh + 40) { n.y = hh + 40; n.vy *= -0.5; } if (n.y > H - hh) { n.y = H - hh; n.vy *= -0.5; }
+      if (n.y < hh + 40) { n.y = hh + 40; n.vy *= -0.5; } if (n.y > H - hh - padB) { n.y = H - hh - padB; n.vy *= -0.5; }
     }
     E.gNodes.forEach(function (el, i) { el.style.transform = 'translate(' + (P[i].x - (P[i].w || 0) / 2).toFixed(1) + 'px,' + (P[i].y - (P[i].h || 0) / 2).toFixed(1) + 'px)'; });
     E.gEdges.forEach(function (el, k) {
@@ -1325,7 +1340,8 @@
     window.addEventListener('pointercancel', pointerUp);
     window.addEventListener('keydown', onKey);
     window.addEventListener('hashchange', onRoute);
-    window.addEventListener('resize', placePills);
+    window.addEventListener('resize', function () { placePills(); fitDevice(); });
+    window.addEventListener('orientationchange', function () { setTimeout(function () { placePills(); fitDevice(); }, 250); });
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
       placePills();
