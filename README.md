@@ -41,7 +41,8 @@ python3 -m http.server 8000   # или любой другой статичес�
 
 ## Публикация
 
-GitHub Pages: *Settings → Pages → Deploy from a branch → `main` / `/ (root)`*.
+Автоматически через GitHub Pages: при пуше в `main` workflow `.github/workflows/pages.yml` выкладывает сайт
+(при первом запуске он сам включает Pages; если не вышло — *Settings → Pages → Source: GitHub Actions*).
 
 ## Лицензия
 
