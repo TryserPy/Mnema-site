@@ -1,1 +1,0 @@
-import{i as e}from"./App-BACKydYN.js";export{e as linkRoute};

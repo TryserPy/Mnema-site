@@ -1,0 +1,1 @@
+import{i as e}from"./App-DYrv-FLH.js";export{e as linkRoute};
