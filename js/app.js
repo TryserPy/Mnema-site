@@ -1,6 +1,7 @@
 /* Сайт Мнемы: маршруты по hash (#/features, #/docs/sync …), страницы и анимации без сборки и зависимостей. */
 (function () {
   'use strict';
+  if (window.MNEMA_MOBILE) return; // на телефоне работает js/mobile.js
 
   var D = siteData();
   var DOCS = docsData();

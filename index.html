@@ -21,13 +21,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css" media="(min-width: 761px) and (pointer: fine), (min-width: 761px) and (pointer: none), (min-width: 761px) and (min-height: 521px)">
+<link rel="stylesheet" href="css/mobile.css" media="(max-width: 760px), (pointer: coarse) and (max-height: 520px)">
 <script>
   (function () {
     var t = null;
     try { t = localStorage.getItem('mnema-theme'); } catch (e) {}
     if (t !== 'dark' && t !== 'light') t = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', t);
+    // телефон — отдельный интерфейс-приложение (js/mobile.js), остальное — версия для компьютера (js/app.js)
+    var q = '(max-width: 760px), (pointer: coarse) and (max-height: 520px)';
+    var mm = window.matchMedia ? matchMedia(q) : null;
+    window.MNEMA_MOBILE = !!(mm && mm.matches);
+    if (mm) {
+      var onChange = function () { if (mm.matches !== window.MNEMA_MOBILE) location.reload(); };
+      if (mm.addEventListener) mm.addEventListener('change', onChange); else if (mm.addListener) mm.addListener(onChange);
+    }
   })();
 </script>
 <style>
@@ -90,10 +99,14 @@
 
 <div id="sheet-root"></div>
 
-<noscript><div class="nojs"><h1>Мнема</h1><p>Для этого сайта нужен JavaScript. Приложение можно скачать на странице <a href="https://github.com/TryserPy/Mnema/releases/latest">выпусков</a>.</p></div></noscript>
+
 </div>
+
+<div id="m-app"></div>
+<noscript><div class="nojs"><h1>Мнема</h1><p>Для этого сайта нужен JavaScript. Приложение можно скачать на странице <a href="https://github.com/TryserPy/Mnema/releases/latest">выпусков</a>.</p></div></noscript>
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
+<script src="js/mobile.js"></script>
 </body>
 </html>
