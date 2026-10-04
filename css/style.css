@@ -418,7 +418,7 @@
   .navlink{padding:0 12px}
 }
 @media (max-width:1060px){
-  .navlinks,.nav-cta{display:none}
+  .navlinks,.nav-cta,.nav-web{display:none}
   .tabbar{display:grid}
   .site{padding-bottom:84px}
 }

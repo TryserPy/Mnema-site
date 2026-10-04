@@ -6,6 +6,8 @@
   var D = mobileData();
   var REPO = 'TryserPy/Mnema';
   var RELEASES = 'https://github.com/' + REPO + '/releases/latest';
+  // Веб-версия приложения лежит рядом с сайтом (папка app/): запускается в браузере и ставится как приложение, в том числе на iPhone и iPad.
+  var WEBAPP = 'app/';
   var FALLBACK_VER = '1.26.0';
   var STYLE_SAMPLE = '{\n  "kind": "mnema-mod",\n  "name": "Стикеры + пастельные оценки",\n  "description": "Карточки как жёлтые стикеры",\n  "author": "Я",\n  "where": "при повторении",\n  "css": ".review-card { background: #FFF4A8 !important; color: #2B2610 !important; transform: rotate(-0.6deg); } .grade.good { background: #CFF1DC; color: #1F6B43; }"\n}';
 
@@ -56,7 +58,7 @@
     gSel: null,
     filter: 'all', query: '', sheet: null,
     reps: [1, 3, 7, 16], methFlip: {},
-    plat: /Windows|Win64|Macintosh|X11/.test(navigator.userAgent) && !/Android|iPhone|iPad/.test(navigator.userAgent) ? 'win' : 'android',
+    plat: /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'web' : /Windows|Win64|Macintosh|X11/.test(navigator.userAgent) && !/Android/.test(navigator.userAgent) ? 'win' : 'android',
     docQ: ''
   };
   var REL = null;
@@ -179,9 +181,10 @@
           '</div>' +
           '<div class="counter"><span class="cnt" data-cnt-left></span><span class="cnt" style="color: var(--good)" data-cnt-know></span><span class="cnt" style="color: var(--warm-text)" data-cnt-again></span></div>' +
         '</div>' +
-        '<button type="button" class="btn primary wide" data-act="download" style="margin-top: 6px">' + ICON.dl(20) + 'Скачать бесплатно</button>' +
+        '<a class="btn primary wide" href="' + WEBAPP + '" style="margin-top: 6px">Открыть онлайн</a>' +
+        '<button type="button" class="btn ghost wide" data-act="download" style="margin-top: 8px">' + ICON.dl(20) + 'Скачать приложение</button>' +
       '</section>' +
-      '<div class="hs" style="margin-top: 16px"><span class="fact">Windows и Android</span><span class="fact">Без аккаунта</span><span class="fact">Без рекламы</span><span class="fact">Работает офлайн</span></div>' +
+      '<div class="hs" style="margin-top: 16px"><span class="fact">Windows, Android, iPhone и браузер</span><span class="fact">Без аккаунта</span><span class="fact">Без рекламы</span><span class="fact">Работает офлайн</span></div>' +
 
       '<section class="sec" style="padding-top: 90px; padding-bottom: 14px"><p class="words" data-words aria-label="' + esc(D.words) + '">' + words + '</p></section>' +
 
@@ -228,8 +231,9 @@
       '<section class="sec" data-reveal><div class="cta">' +
         '<button type="button" class="mlogo-big" data-logo data-act="logo" aria-label="Показать анимацию логотипа">' + ICON.logo('auto') + '</button>' +
         '<h2 class="serif" style="font-size: 32px; line-height: 1.06; letter-spacing: -0.03em">Учёба, которая остаётся в голове.</h2>' +
-        '<p style="font-size: 16px; opacity: .78">Бесплатно для Windows и Android. Обновляется сама — карточки сохраняются.</p>' +
-        '<button type="button" class="btn primary wide" data-act="download" data-arg="android">Скачать для Android</button>' +
+        '<p style="font-size: 16px; opacity: .78">Бесплатно для Windows и Android, а в браузере — на любом устройстве, даже на iPhone и iPad.</p>' +
+        '<a class="btn primary wide" href="' + WEBAPP + '">Открыть онлайн</a>' +
+        '<button type="button" class="btn ghost wide" data-act="download" data-arg="android">Скачать для Android</button>' +
         '<button type="button" class="btn ghost wide" data-act="download" data-arg="win">Скачать для Windows</button>' +
       '</div><p class="small" style="text-align: center; padding: 22px 20px 0">© 2026 Мнема · открытый код</p></section>' +
     '</div>';
@@ -308,7 +312,7 @@
   }
 
   var MORE = [
-    { t: 'Скачать', d: 'Windows и Android', icon: 'M12 4v11M7 10l5 5 5-5M5 20h14', cls: '', k: 'download' },
+    { t: 'Скачать', d: 'Windows, Android и браузер', icon: 'M12 4v11M7 10l5 5 5-5M5 20h14', cls: '', k: 'download' },
     { t: 'Что нового', d: 'Версия ' + FALLBACK_VER, icon: 'M12 3l2.2 5.3L20 9l-4.4 3.8L17 18.5 12 15.6 7 18.5l1.4-5.7L4 9l5.8-.7z', cls: ' c-review', k: 'updates' },
     { t: 'Документация', d: 'От первой карточки до своих модов', icon: 'M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5zM5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6M9 11h4', cls: ' c-data', k: 'docs' },
     { t: 'Моды', d: 'Свои экраны и команды — документация на будущее', icon: 'M10 4h4v3a2 2 0 1 0 0 4v0h3v4h-3a2 2 0 1 0 0 4v1h-4v-3a2 2 0 1 0-4 0H3v-4h3a2 2 0 1 0 0-4V4z', cls: ' c-ai', k: 'doc', id: 'mods', soon: true }
@@ -321,7 +325,7 @@
     }).join('');
     return '<div class="screen"><h1 class="lt">Ещё</h1>' +
       '<div class="about"><button type="button" class="mlogo-big" style="width: 60px; height: 60px" data-logo data-act="logo" aria-label="Показать анимацию логотипа">' + ICON.logo('play') + '</button>' +
-        '<div style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 20px">Мнема ' + esc(relVer()) + '</b><span class="small" style="font-size: 14px">Windows и Android · без аккаунта и рекламы</span></div></div>' +
+        '<div style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 20px">Мнема ' + esc(relVer()) + '</b><span class="small" style="font-size: 14px">Windows, Android и браузер · без аккаунта и рекламы</span></div></div>' +
       '<div class="group">' + rows + '</div>' +
       '<div class="gtitle">Вид</div><div class="group">' +
         '<div class="row" style="cursor: default"><span class="rt"><b>Тёмная тема</b></span><button type="button" role="switch" class="switch' + (S.dark ? ' on' : '') + '" aria-checked="' + S.dark + '" aria-label="Тёмная тема" data-act="dark"><span class="knob"></span></button></div>' +
@@ -451,7 +455,7 @@
     if (REL && REL[kind] && REL[kind].name) return REL[kind].name;
     return kind === 'win' ? 'Mnema-Setup-' + relVer() + '.exe' : 'Mnema-' + relVer() + '-Android.apk';
   }
-  function relUrl(kind) { return (REL && REL[kind] && REL[kind].url) || RELEASES; }
+  function relUrl(kind) { return kind === 'web' ? WEBAPP : (REL && REL[kind] && REL[kind].url) || RELEASES; }
 
   function layerTitle(it) {
     if (it.k === 'updates') return 'Что нового';
@@ -471,8 +475,8 @@
     }
     if (it.k === 'download') {
       return '<div class="lpage" style="padding-bottom: 0"><h1 class="lt">Скачать</h1><p class="lead" data-dl-lead></p>' +
-        '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(2, 1fr); margin: 0 16px 6px"><span class="seg-thumb" data-plat-thumb style="width: calc((100% - 4px) / 2)"></span>' +
-          '<button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button></div>' +
+        '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(3, 1fr); margin: 0 16px 6px"><span class="seg-thumb" data-plat-thumb style="width: calc((100% - 4px) / 3)"></span>' +
+          '<button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="web" data-act="plat" data-arg="web">Браузер</button></div>' +
         '<div class="dev-stage"><div class="device" data-dev><div class="dscreen" data-dscreen>' +
           '<div class="dside" data-dside><span style="width: 80%"></span><span style="width: 60%"></span><span style="width: 70%"></span></div>' +
           '<div class="dmain"><b class="serif" style="font-size: 16px">Сегодня</b><div class="dbtn">Учиться</div><div class="dbar">История<i><b style="width: 72%"></b></i></div><div class="dbar">Физика<i><b style="width: 48%"></b></i></div><div class="dbar">Биология<i><b style="width: 86%"></b></i></div>' +
@@ -637,7 +641,7 @@
     var parts = $$('[data-dev],[data-dscreen],[data-dside],[data-dbase],[data-dtabs]', el);
     if (first) parts.forEach(function (p) { p.style.transition = 'none'; });
     q('[data-dl-lead]').textContent = 'Версия ' + relVer() + '. Бесплатно, без аккаунта и рекламы.';
-    q('[data-plat-thumb]').style.transform = 'translateX(' + (win ? 100 : 0) + '%)';
+    q('[data-plat-thumb]').style.transform = 'translateX(' + ({ android: 0, win: 100, web: 200 }[S.plat]) + '%)';
     $$('[data-plat]', el).forEach(function (b) { var on = b.getAttribute('data-plat') === S.plat; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
     var dev = q('[data-dev]');
     dev.style.width = win ? '300px' : '170px'; dev.style.height = win ? '196px' : '300px'; dev.style.borderRadius = win ? '14px' : '32px';
@@ -646,11 +650,12 @@
     var base = q('[data-dbase]'); base.style.width = win ? '116%' : '0%'; base.style.opacity = win ? 1 : 0;
     var tabs = q('[data-dtabs]'); tabs.style.opacity = win ? 0 : 1; tabs.style.transform = win ? 'translateY(30px)' : 'translateY(0px)';
     if (first) { void dev.offsetWidth; parts.forEach(function (p) { p.style.transition = ''; }); }
-    q('[data-plat-title]').textContent = win ? 'Для Windows' : 'Для Android';
-    q('[data-plat-steps]').innerHTML = win ?
+    q('[data-plat-title]').textContent = win ? 'Для Windows' : S.plat === 'android' ? 'Для Android' : 'В браузере (в том числе iPhone и iPad)';
+    q('[data-plat-steps]').innerHTML = S.plat === 'web' ?
+      '<ol class="steps"><li><span><b>Открой Мнему в браузере</b><br><span class="muted">Ничего ставить не нужно: Chrome, Edge, Safari или Firefox.</span></span></li><li><span><b>Поставь как приложение</b><br><span class="muted">Android: «Установить» в меню Chrome. iPhone и iPad: Safari → «Поделиться» → «На экран „Домой“».</span></span></li><li><span><b>Учись без интернета</b><br><span class="muted">После первого открытия всё работает офлайн. Данные лежат в браузере этого устройства — копию можно сохранить в «Настройки → Данные».</span></span></li></ol>' : win ?
       '<ol class="steps"><li><span><b>Скачай установщик</b><br><span class="muted mono" style="font-size: 13px">' + esc(relFile('win')) + '</span></span></li><li><span><b>Запусти и следуй установщику</b><br><span class="muted">Можно включить автозапуск и значок у часов.</span></span></li><li><span><b>Дальше — само</b><br><span class="muted">Мнема раз в день проверяет выпуски.</span></span></li></ol>' :
       '<ol class="steps"><li><span><b>Скачай APK на телефон</b><br><span class="muted mono" style="font-size: 13px">' + esc(relFile('android')) + '</span></span></li><li><span><b>Открой и разреши установку</b><br><span class="muted">Из этого источника — один раз.</span></span></li><li><span><b>Перенеси карточки с компьютера</b><br><span class="muted">По Wi-Fi: код из 12 знаков или QR.</span></span></li></ol>';
-    var cta = q('[data-plat-cta]'); cta.textContent = win ? 'Скачать Mnema-Setup.exe' : 'Скачать APK'; cta.setAttribute('href', relUrl(win ? 'win' : 'android'));
+    var cta = q('[data-plat-cta]'); cta.textContent = win ? 'Скачать Mnema-Setup.exe' : S.plat === 'android' ? 'Скачать APK' : 'Открыть онлайн'; cta.setAttribute('href', relUrl(S.plat));
   }
 
   // ───── шторка ─────
