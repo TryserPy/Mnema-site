@@ -1,0 +1,1 @@
+import{i as e}from"./App-DhyUceT3.js";export{e as linkRoute};

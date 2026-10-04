@@ -8,7 +8,7 @@
   var RELEASES = 'https://github.com/' + REPO + '/releases/latest';
   // Веб-версия приложения лежит рядом с сайтом (папка app/): запускается в браузере и ставится как приложение, в том числе на iPhone и iPad.
   var WEBAPP = 'app/';
-  var FALLBACK_VER = '1.26.0';
+  var FALLBACK_VER = '1.27.0';
   var STYLE_SAMPLE = '{\n  "kind": "mnema-mod",\n  "name": "Стикеры + пастельные оценки",\n  "description": "Карточки как жёлтые стикеры",\n  "author": "Я",\n  "where": "при повторении",\n  "css": ".review-card { background: #FFF4A8 !important; color: #2B2610 !important; transform: rotate(-0.6deg); } .grade.good { background: #CFF1DC; color: #1F6B43; }"\n}';
 
   // документация та же, что на компьютере, но без интерактивных конструкторов
@@ -170,7 +170,7 @@
 
     return '<div class="screen">' +
       '<section class="hero">' +
-        '<button type="button" class="eyebrow" data-act="push" data-arg="updates"><b>1.26</b><span>Wi-Fi-синхронизация зашифрована</span><span aria-hidden="true">›</span></button>' +
+        '<button type="button" class="eyebrow" data-act="push" data-arg="updates"><b>1.27</b><span>Мнема онлайн: в браузере и на iPhone</span><span aria-hidden="true">›</span></button>' +
         '<h1 class="serif hero-h">Запоминай больше.<br><span class="accent-text">Учи меньше.</span></h1>' +
         '<p class="hero-p">Параграф → конспект → карточки → повторения по расписанию. Попробуй — смахни карточку.</p>' +
         '<div class="sw-wrap"><div class="sw-area">' + deck + '<div data-deck-done></div></div>' +
