@@ -1,1 +1,0 @@
-import{i as e}from"./App-DdY15KRw.js";export{e as linkRoute};
