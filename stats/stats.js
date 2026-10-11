@@ -1,5 +1,8 @@
 /* Скрытая страница статистики Refrain (только для владельца).
-   Токен GitHub вводится вручную, лежит в sessionStorage (или в localStorage по галочке) и уходит только на https://api.github.com.
+   Токен GitHub вводится вручную и живёт только в переменной в памяти страницы: ни в sessionStorage, ни в localStorage, ни в cookie он не попадает
+   (на этом origin работает веб-версия приложения app/ с модами, её код мог бы прочитать хранилища). Перезагрузка страницы = ввести токен заново.
+   Ответы API (трафик, referrers, выпуски) тоже только в памяти. В localStorage лежат лишь названия владельца и репозиториев — это не секрет.
+   Токен уходит только на https://api.github.com.
    Все строки из API выводятся через textContent — innerHTML с данными нигде не используется. Токен не пишется ни в консоль, ни в адрес, ни в атрибуты. */
 (function () {
   'use strict';
@@ -7,8 +10,8 @@
   var API = 'https://api.github.com';
   var NAME_RE = /^[A-Za-z0-9-_.]+$/;           // владелец и имя репозитория
   var TOKEN_RE = /^[\x21-\x7E]{8,255}$/;       // токен: видимые ASCII-символы без пробелов
-  var K_TOKEN = 'rs-token', K_CFG = 'rs-cfg', K_RATE = 'rs-rate', K_CACHE = 'rs-c:';
-  var TTL = 5 * 60 * 1000;                     // кэш ответов — 5 минут
+  var K_CFG = 'rs-cfg';                        // единственное, что хранится: владелец и репозитории (не секрет)
+  var TTL = 5 * 60 * 1000;                     // кэш ответов — 5 минут, только в памяти страницы
   var DEF = { owner: 'TryserPy', app: 'Mnema', site: 'Mnema-site' };
   var NS = 'http://www.w3.org/2000/svg';
   var DAY = 86400000;
@@ -20,17 +23,13 @@
   function stGet(st, k) { try { return window[st].getItem(k); } catch (e) { return null; } }
   function stSet(st, k, v) { try { window[st].setItem(k, v); return true; } catch (e) { return false; } }
   function stDel(st, k) { try { window[st].removeItem(k); } catch (e) {} }
-  function wipe() { // «Выйти»: стираем токен, настройки, кэш и лимит — везде
+  // одноразовая чистка: в прежних версиях токен, кэш и лимит лежали в хранилищах под ключами rs-* — убираем всё, кроме настроек
+  function purgeOld() {
     ['sessionStorage', 'localStorage'].forEach(function (st) {
       var keys = [];
-      try { for (var i = 0; i < window[st].length; i++) { var k = window[st].key(i); if (k && k.indexOf('rs-') === 0) keys.push(k); } } catch (e) { return; }
+      try { for (var i = 0; i < window[st].length; i++) { var k = window[st].key(i); if (k && k.indexOf('rs-') === 0 && !(st === 'localStorage' && k === K_CFG)) keys.push(k); } } catch (e) { return; }
       keys.forEach(function (k) { stDel(st, k); });
     });
-  }
-  function wipeCache() {
-    var keys = [];
-    try { for (var i = 0; i < sessionStorage.length; i++) { var k = sessionStorage.key(i); if (k && k.indexOf(K_CACHE) === 0) keys.push(k); } } catch (e) { return; }
-    keys.forEach(function (k) { stDel('sessionStorage', k); });
   }
 
   // ───── мелочи ─────
@@ -95,6 +94,7 @@
   var token = null;
   var cfg = { owner: DEF.owner, app: DEF.app, site: DEF.site };
   var rate = null;      // { rem, lim, reset }
+  var cache = {};       // ответы API: путь -> { at, data }; только в памяти
   var busy = false;
   var charts = [];      // нарисованные графики: перерисовываем при смене ширины
 
@@ -120,18 +120,14 @@
     $$('.f-site').forEach(function (i) { i.value = cfg.site; });
   }
   function loadCfg() {
-    var raw = stGet('sessionStorage', K_CFG) || stGet('localStorage', K_CFG);
+    var raw = stGet('localStorage', K_CFG);
     if (!raw) return;
     try {
       var c = JSON.parse(raw);
       if (c && !cfgError(c)) cfg = { owner: c.owner, app: c.app, site: c.site };
     } catch (e) {}
   }
-  function saveCfg(remember) {
-    var s = JSON.stringify(cfg);
-    stSet('sessionStorage', K_CFG, s);
-    if (remember) stSet('localStorage', K_CFG, s); else stDel('localStorage', K_CFG);
-  }
+  function saveCfg() { stSet('localStorage', K_CFG, JSON.stringify(cfg)); }
 
   // ───── запросы к GitHub ─────
   function readRate(res) {
@@ -140,18 +136,12 @@
     rate = { rem: Number(rem), lim: Number(res.headers.get('x-ratelimit-limit')), reset: Number(res.headers.get('x-ratelimit-reset')) };
   }
   function readCache(key) {
-    var raw = stGet('sessionStorage', key);
-    if (!raw) return null;
-    try {
-      var c = JSON.parse(raw);
-      if (c && typeof c.at === 'number' && Date.now() - c.at < TTL && Date.now() >= c.at) return c;
-    } catch (e) {}
-    stDel('sessionStorage', key);
-    return null;
+    var c = cache[key];
+    return c && Date.now() - c.at < TTL ? c : null;
   }
   // path — только относительный путь к api.github.com; reduce — урезает ответ перед кэшем (чтобы не забить хранилище)
   function request(path, force, reduce) {
-    var key = K_CACHE + path;
+    var key = path;
     if (!force) {
       var c = readCache(key);
       if (c) return Promise.resolve({ data: c.data, at: c.at, cached: true });
@@ -169,7 +159,7 @@
         return res.json().then(function (data) {
           if (reduce) data = reduce(data);
           var at = Date.now();
-          stSet('sessionStorage', key, JSON.stringify({ at: at, data: data }));
+          cache[key] = { at: at, data: data };
           return { data: data, at: at, cached: false };
         });
       }
@@ -620,7 +610,6 @@
       if (okCount) {
         showMeta(at, cached);
       } else showMeta(null, false);
-      if (rate) stSet('sessionStorage', K_RATE, JSON.stringify(rate));
 
       var netErr = all.filter(function (x) { return !x.ok && x.err.kind === 'net'; }).length;
       var rateErr = all.filter(function (x) { return !x.ok && x.err.kind === 'rate'; })[0];
@@ -644,14 +633,12 @@
   }
   function logout(msg) {
     token = null;
-    wipe();
+    cache = {};
     charts = [];
     out.textContent = '';
     $('#meta-line').textContent = '';
     showMsg($('#app-msg'), '');
     rate = null;
-    cfg = { owner: DEF.owner, app: DEF.app, site: DEF.site };
-    $('#f-remember').checked = false;
     showLogin(msg);
   }
 
@@ -661,14 +648,11 @@
     if (!TOKEN_RE.test(t)) { showMsg($('#login-msg'), 'Вставь токен целиком: он состоит из латинских букв, цифр и знаков, без пробелов.'); return; }
     var c = readCfgFrom(loginBox), e = cfgError(c);
     if (e) { $('#repos-box-login').open = true; showMsg($('#login-msg'), e); return; }
-    var remember = $('#f-remember').checked;
-    wipe(); // чистим всё прежнее: другой токен — другие права
+    cache = {}; // другой токен — другие права, старые ответы не нужны
     cfg = c;
     token = t;
     input.value = '';
-    stSet('sessionStorage', K_TOKEN, t);
-    if (remember) stSet('localStorage', K_TOKEN, t);
-    saveCfg(remember);
+    saveCfg();
     showMsg($('#login-msg'), '');
     showApp();
     load(true);
@@ -680,9 +664,8 @@
     showMsg($('#cfg-msg'), e || '');
     if (e) return;
     cfg = c;
-    saveCfg(stGet('localStorage', K_TOKEN) !== null);
-    wipeCache();
-    load(true);
+    saveCfg();
+    load(false); // ответы по тем же адресам берутся из памяти
   });
 
   var rzT = null, lastW = window.innerWidth;
@@ -692,13 +675,7 @@
   });
 
   // ───── старт ─────
+  purgeOld();
   loadCfg();
-  token = stGet('sessionStorage', K_TOKEN) || stGet('localStorage', K_TOKEN);
-  if (token && !TOKEN_RE.test(token)) { token = null; wipe(); }
-  if (token) {
-    $('#f-remember').checked = stGet('localStorage', K_TOKEN) !== null;
-    try { var rr = JSON.parse(stGet('sessionStorage', K_RATE) || 'null'); if (rr && typeof rr.rem === 'number') rate = rr; } catch (e) {}
-    showApp();
-    load(false);
-  } else showLogin('');
+  showLogin('');
 })();
