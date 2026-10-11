@@ -1,1 +1,0 @@
-import{i as e}from"./App-Q4nSFq1V.js";export{e as linkRoute};
