@@ -19,6 +19,7 @@
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  var CHIP = '<span class="tchip">тест</span>'; // метка «тест» у ссылок на онлайн-версию
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -258,15 +259,16 @@
       '<section class="wrap hero" data-hero>' +
         '<div class="hero-grid">' +
           '<div class="hero-copy">' +
-            '<a class="eyebrow" href="#/updates"><b>1.27</b><span>Refrain онлайн: в браузере и на iPhone</span><span aria-hidden="true">›</span></a>' +
+            '<a class="eyebrow" href="#/updates"><b>1.27</b><span>Refrain онлайн — тестовая версия</span><span aria-hidden="true">›</span></a>' +
             '<h1 class="serif h-display">Запоминай больше.<br><span class="accent-text">Учи меньше.</span></h1>' +
             '<p class="lead">Параграф учебника → конспект → карточки → повторения по расписанию. Refrain встраивает в учёбу то, что по исследованиям действительно работает.</p>' +
             '<div style="display: flex; flex-wrap: wrap; gap: 12px">' +
-              '<a class="btn btn-primary" data-magnet href="' + WEBAPP + '">Открыть онлайн</a>' +
+              '<a class="btn btn-primary" data-magnet href="' + WEBAPP + '">Открыть онлайн <span class="tchip">тест</span></a>' +
               '<a class="btn btn-ghost" data-magnet data-dl="any" href="' + RELEASES + '">' + SVG.download + 'Скачать приложение</a>' +
               '<button type="button" class="btn btn-ghost" data-magnet data-act="demo">Попробовать прямо здесь</button>' +
             '</div>' +
-            '<div class="facts"><span>Windows, Android, iPhone, iPad и браузер</span><span>Без аккаунта</span><span>Без рекламы</span><span>Работает офлайн</span></div>' +
+            '<p class="webnote">Онлайн-версия — только для тестов: данные остаются в этом браузере и могут пропасть. Для постоянной учёбы — Windows или Android.</p>' +
+            '<div class="facts"><span>Windows и Android</span><span>Без аккаунта</span><span>Без рекламы</span><span>Работает офлайн</span></div>' +
           '</div>' +
           '<div class="deck" data-deck><div class="deck-stage" data-deck-stage>' + hero + '</div></div>' +
         '</div>' +
@@ -367,9 +369,9 @@
         '<div class="cta" data-spot data-reveal>' +
           '<button type="button" class="mlogo-big" data-logo data-act="logo" aria-label="Refrain — показать анимацию логотипа"><span class="mlogo auto" aria-hidden="true"><span class="mlogo-bg"></span><span class="mlogo-ring"></span><svg viewBox="0 0 32 32"><path class="echo e2" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="echo e1" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="r" pathLength="100" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path></svg><span class="mlogo-dot"></span></span></button>' +
           '<h2 class="serif h-large" style="max-width: 860px">Учёба, которая остаётся в голове.</h2>' +
-          '<p style="font-size: 19px; opacity: .78; max-width: 520px">Бесплатно для Windows и Android, а в браузере — на любом устройстве, даже на iPhone и iPad. Карточки и настройки при обновлении сохраняются.</p>' +
+          '<p style="font-size: 19px; opacity: .78; max-width: 520px">Бесплатно для Windows и Android. Карточки и настройки при обновлении сохраняются. Онлайн-версия в браузере — только для тестов.</p>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">' +
-            '<a class="btn btn-primary" data-magnet href="' + WEBAPP + '">Открыть онлайн</a>' +
+            '<a class="btn btn-primary" data-magnet href="' + WEBAPP + '">Открыть онлайн <span class="tchip">тест</span></a>' +
             '<a class="btn btn-ghost" data-magnet data-dl="win" href="' + RELEASES + '">Скачать для Windows</a>' +
             '<a class="btn btn-ghost" data-magnet data-dl="android" href="' + RELEASES + '">Скачать для Android</a>' +
           '</div>' +
@@ -693,7 +695,7 @@
       '<div class="ptitle" style="align-items: center; text-align: center"><div class="kicker" data-dl-kicker></div>' +
       '<h1 class="serif h-large">Refrain на твоём устройстве.</h1><p class="lead">Бесплатно. Без аккаунта и рекламы. Учится и работает без интернета.</p>' +
       '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(3, 150px); margin-top: 8px"><span class="seg-thumb" data-plat-thumb style="width: 150px"></span>' +
-        '<button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="web" data-act="plat" data-arg="web">В браузере</button></div></div>' +
+        '<button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="web" data-act="plat" data-arg="web">Онлайн (тест)</button></div></div>' +
       '<div class="dl-grid" style="margin-top: 56px">' +
         '<div class="dev-stage" data-dev-stage><div class="device" data-dev><div class="screen" data-screen>' +
           '<div class="app-side" data-side><b style="font-size: 13px; display: flex; gap: 6px; align-items: center"><span class="logo" style="width: 20px; height: 20px; border-radius: 6px; font-size: 12px">R</span>Refrain</b>' +
@@ -735,7 +737,7 @@
     var base = q('[data-base]'); base.style.width = wide ? '118%' : '0%'; base.style.opacity = wide ? 1 : 0;
     var tabs = q('[data-tabs]'); tabs.style.opacity = wide ? 0 : 1; tabs.style.transform = wide ? 'translateY(30px)' : 'translateY(0px)';
     if (first) { void dev.offsetWidth; $$('[data-dev-stage],[data-dev],[data-screen],[data-side],[data-base],[data-tabs]', app).forEach(function (el) { el.style.transition = ''; }); }
-    q('[data-plat-title]').textContent = win ? 'Для Windows' : plat === 'android' ? 'Для Android' : 'В браузере: ПК, планшет, iPhone, Android';
+    q('[data-plat-title]').textContent = win ? 'Для Windows' : plat === 'android' ? 'Для Android' : 'Онлайн-версия — только для тестов';
     q('[data-plat-steps]').innerHTML = win ?
       '<ol class="steps"><li><span><b>Скачай установщик</b><br><span class="muted mono" style="font-size: 14px">' + esc(relFile('win')) + '</span></span></li>' +
       '<li><span><b>Запусти и следуй установщику</b><br><span class="muted">Можно включить автозапуск и значок у часов.</span></span></li>' +
@@ -744,10 +746,10 @@
       '<ol class="steps"><li><span><b>Скачай APK на телефон</b><br><span class="muted mono" style="font-size: 14px">' + esc(relFile('android')) + '</span></span></li>' +
       '<li><span><b>Открой и разреши установку</b><br><span class="muted">Из этого источника — один раз.</span></span></li>' +
       '<li><span><b>Перенеси карточки с компьютера</b><br><span class="muted">По Wi-Fi: код из 12 знаков или QR — и готово.</span></span></li></ol>' :
-      '<ol class="steps"><li><span><b>Открой Refrain в браузере</b><br><span class="muted">Ничего ставить не нужно: Chrome, Edge, Safari или Firefox на любом устройстве.</span></span></li>' +
-      '<li><span><b>Поставь как приложение</b><br><span class="muted">Компьютер и Android: кнопка «Установить» в адресной строке или в меню. iPhone и iPad: Safari → «Поделиться» → «На экран „Домой“».</span></span></li>' +
-      '<li><span><b>Учись без интернета</b><br><span class="muted">После первого открытия всё работает офлайн. Данные лежат в браузере этого устройства — копию можно сохранить в «Настройки → Данные».</span></span></li></ol>';
-    var cta = q('[data-plat-cta]'); cta.textContent = win ? 'Скачать ' + relFile('win') : plat === 'android' ? 'Скачать APK' : 'Открыть онлайн';
+      '<ol class="steps"><li><span><b>Открой онлайн-версию</b><br><span class="muted">Она нужна только для тестов и знакомства: Chrome, Edge, Safari или Firefox.</span></span></li>' +
+      '<li><span><b>Помни про данные</b><br><span class="muted">Они лежат только в этом браузере и могут пропасть. Копию можно сохранить в «Настройки → Данные».</span></span></li>' +
+      '<li><span><b>Для постоянной учёбы — приложение</b><br><span class="muted">Поставь Refrain для Windows или Android: там карточки в безопасности.</span></span></li></ol>';
+    var cta = q('[data-plat-cta]'); cta.innerHTML = win ? 'Скачать ' + esc(relFile('win')) : plat === 'android' ? 'Скачать APK' : 'Открыть онлайн ' + CHIP;
     cta.setAttribute('href', relUrl(plat));
   }
 

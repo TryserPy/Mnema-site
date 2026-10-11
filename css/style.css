@@ -58,6 +58,10 @@
 .site .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
 .site .btn-ghost:hover{color:var(--ink);background:var(--surface)}
 .btn-sm{height:38px;padding:0 16px;font-size:14px}
+.tchip{display:inline-flex;align-items:center;flex:none;height:18px;padding:0 7px;border-radius:999px;background:rgba(255,255,255,.24);color:inherit;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1}
+.btn-ghost .tchip,.btn.ghost .tchip{background:color-mix(in oklab,var(--accent) 16%,transparent);color:var(--accent-text)}
+.webnote{margin:0;max-width:460px;font-size:13px;line-height:1.45;color:var(--ink3)}
+.cta .webnote{color:rgba(241,239,233,.62);max-width:420px}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--ink2);cursor:pointer;transition:border-color .3s,transform .3s}
 .eyebrow:hover{border-color:var(--line2)}
 .eyebrow b{background:var(--accent);color:#fff;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
