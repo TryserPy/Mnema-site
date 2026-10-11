@@ -1,4 +1,4 @@
-/* Сайт Мнемы: маршруты по hash (#/features, #/docs/sync …), страницы и анимации без сборки и зависимостей. */
+/* Сайт Refrain: маршруты по hash (#/features, #/docs/sync …), страницы и анимации без сборки и зависимостей. */
 (function () {
   'use strict';
   if (window.MNEMA_MOBILE) return; // на телефоне работает js/mobile.js
@@ -258,9 +258,9 @@
       '<section class="wrap hero" data-hero>' +
         '<div class="hero-grid">' +
           '<div class="hero-copy">' +
-            '<a class="eyebrow" href="#/updates"><b>1.27</b><span>Мнема онлайн: в браузере и на iPhone</span><span aria-hidden="true">›</span></a>' +
+            '<a class="eyebrow" href="#/updates"><b>1.27</b><span>Refrain онлайн: в браузере и на iPhone</span><span aria-hidden="true">›</span></a>' +
             '<h1 class="serif h-display">Запоминай больше.<br><span class="accent-text">Учи меньше.</span></h1>' +
-            '<p class="lead">Параграф учебника → конспект → карточки → повторения по расписанию. Мнема встраивает в учёбу то, что по исследованиям действительно работает.</p>' +
+            '<p class="lead">Параграф учебника → конспект → карточки → повторения по расписанию. Refrain встраивает в учёбу то, что по исследованиям действительно работает.</p>' +
             '<div style="display: flex; flex-wrap: wrap; gap: 12px">' +
               '<a class="btn btn-primary" data-magnet href="' + WEBAPP + '">Открыть онлайн</a>' +
               '<a class="btn btn-ghost" data-magnet data-dl="any" href="' + RELEASES + '">' + SVG.download + 'Скачать приложение</a>' +
@@ -302,7 +302,7 @@
       '<section id="demo" class="wrap sec-md" style="padding-top: 140px"><div class="demo-grid">' +
         '<div style="display: flex; flex-direction: column; gap: 22px" data-reveal>' +
           '<div class="kicker">Попробуй прямо здесь</div>' +
-          '<h2 class="serif h-sec">Смахни карточку — как в Мнеме.</h2>' +
+          '<h2 class="serif h-sec">Смахни карточку — как в Refrain.</h2>' +
           '<p class="lead">Нажми, чтобы увидеть ответ. Вправо — «Помню», влево — «Снова». Карточка «Снова» вернётся в эту же сессию: доучивание сразу работает лучше, чем «потом как-нибудь».</p>' +
           '<div class="ios-group" style="max-width: 420px; background: var(--surface); border: 1px solid var(--line)">' +
             '<div class="ios-row"><span>Осталось в сессии</span><b class="mono" data-deck-left>6</b></div>' +
@@ -323,7 +323,7 @@
       '<section class="wrap sec-lg" style="padding-top: 160px">' +
         '<div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; max-width: 760px" data-reveal><div class="kicker">Всё для учёбы</div><h2 class="serif h-sec">Одно приложение вместо тетради, флешкарт и будильника.</h2></div>' +
         '<div class="bento">' +
-          '<article class="tile t-4" data-tilt data-reveal><h3>Фото учебника → конспект</h3><p>Сфотографируй страницы — Мнема распознает текст даже без интернета, найдёт жирное, рисунки и рамки «Запомните».</p>' +
+          '<article class="tile t-4" data-tilt data-reveal><h3>Фото учебника → конспект</h3><p>Сфотографируй страницы — Refrain распознает текст даже без интернета, найдёт жирное, рисунки и рамки «Запомните».</p>' +
             '<div class="viz"><div class="typed"><span style="width: 100%"></span><span style="width: 86%"></span><span style="width: 94%"></span><span style="width: 52%"></span></div>' +
             '<div class="scanpic"><div class="scanbar"></div><span style="width: 70%; height: 12px; background: #CFC6B3"></span><span></span><span style="width: 94%"></span><span style="width: 88%"></span><span style="width: 60%"></span></div></div>' +
             arrowFeat('learn') + '</article>' +
@@ -342,7 +342,7 @@
               '<span class="wire-line"><span class="packet"></span><span class="packet"></span><span class="packet"></span></span>' +
               '<span class="dev"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2.5"></rect><path d="M11 18h2"></path></svg></span>' +
             '</div></div>' + arrowFeat('data') + '</article>' +
-          '<article class="tile t-3" data-tilt data-reveal><h3>Anki ⇄ Мнема ⇄ Obsidian</h3><p>Импорт колод с прогрессом и картинками, экспорт обратно. Данные — в открытых форматах, ты не привязан к Мнеме.</p>' +
+          '<article class="tile t-3" data-tilt data-reveal><h3>Anki ⇄ Refrain ⇄ Obsidian</h3><p>Импорт колод с прогрессом и картинками, экспорт обратно. Данные — в открытых форматах, ты не привязан к Refrain.</p>' +
             '<div class="viz chips" style="align-content: flex-end"><span class="chip mono">.apkg</span><span class="chip mono">.colpkg</span><span class="chip mono">.anki2</span><span class="chip mono">.md</span><span class="chip mono">.mnema</span></div>' +
             arrowFeat('data') + '</article>' +
           '<article class="tile t-3" data-tilt data-reveal style="background: var(--ink); color: var(--bg); border-color: transparent"><h3>Данные принадлежат тебе</h3><p style="color: inherit; opacity: .78">Всё хранится на устройстве. Аккаунт не нужен, рекламы нет. Автокопия каждый день, корзина на 30 дней.</p>' +
@@ -365,7 +365,7 @@
 
       '<section class="wrap sec-lg" style="padding-top: 160px">' +
         '<div class="cta" data-spot data-reveal>' +
-          '<button type="button" class="mlogo-big" data-logo data-act="logo" aria-label="Мнема — показать анимацию логотипа"><span class="mlogo auto" aria-hidden="true"><span class="mlogo-bg"></span><svg viewBox="0 0 32 32"><path d="M8 23 V9.5 L16 18.5 L24 9.5 V23"></path></svg><span class="mlogo-dot"></span></span></button>' +
+          '<button type="button" class="mlogo-big" data-logo data-act="logo" aria-label="Refrain — показать анимацию логотипа"><span class="mlogo auto" aria-hidden="true"><span class="mlogo-bg"></span><span class="mlogo-ring"></span><svg viewBox="0 0 32 32"><path class="echo e2" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="echo e1" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="r" pathLength="100" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path></svg><span class="mlogo-dot"></span></span></button>' +
           '<h2 class="serif h-large" style="max-width: 860px">Учёба, которая остаётся в голове.</h2>' +
           '<p style="font-size: 19px; opacity: .78; max-width: 520px">Бесплатно для Windows и Android, а в браузере — на любом устройстве, даже на iPhone и iPad. Карточки и настройки при обновлении сохраняются.</p>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">' +
@@ -410,7 +410,7 @@
         '<div class="done-card"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--good)"><circle cx="12" cy="12" r="10"></circle><path d="M7.5 12.5l3 3 6-6.5"></path></svg>' +
         '<h3 class="serif" style="font-size: 30px">Сессия окончена</h3>' +
         '<div class="stat-row"><div><b style="color: var(--good)" data-done-know>' + S.know + '</b><span class="small">помню</span></div><div><b style="color: var(--warm-text)" data-done-again>' + S.again + '</b><span class="small">доучил</span></div></div>' +
-        '<p class="small" style="max-width: 240px">В Мнеме следующее повторение назначит расписание — тебе останется нажать «Учиться».</p>' +
+        '<p class="small" style="max-width: 240px">В Refrain следующее повторение назначит расписание — тебе останется нажать «Учиться».</p>' +
         '<button type="button" class="btn btn-ghost btn-sm" data-act="reset-deck">Ещё раз</button></div>' : '';
     }
   }
@@ -554,7 +554,7 @@
       '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px"><span class="tag">' + esc(D.cats[sf.c]) + '</span><button type="button" class="done-btn" data-act="close-sheet">Готово</button></div>' +
       '<h2 class="serif" style="font-size: 36px; line-height: 1.1; margin-bottom: 14px">' + esc(sf.t) + '</h2>' +
       '<p style="font-size: 18px; color: var(--ink2); margin-bottom: 22px">' + esc(sf.more) + '</p>' +
-      '<div class="ios-group" style="margin-bottom: 22px"><div class="ios-row"><span class="muted">Где в Мнеме</span><b style="text-align: right">' + esc(sf.where) + '</b></div>' +
+      '<div class="ios-group" style="margin-bottom: 22px"><div class="ios-row"><span class="muted">Где в Refrain</span><b style="text-align: right">' + esc(sf.where) + '</b></div>' +
       '<div class="ios-row"><span class="muted">Категория</span><b>' + esc(D.cats[sf.c]) + '</b></div></div>' +
       (rel ? '<div class="small" style="margin-bottom: 10px">Рядом в этой категории</div><div class="chips">' + rel + '</div>' : '') +
       '</div></div>';
@@ -565,7 +565,7 @@
     var methods = D.methods.map(function (m, i) {
       return '<button type="button" class="mcard" data-act="methflip" data-arg="' + i + '" aria-label="' + esc(m.t) + ' — перевернуть"><span class="flip" style="transform: rotateY(0deg)">' +
         '<span class="mface"><span class="ev"><i><b style="width: ' + m.w + '"></b></i>' + esc(m.ev) + '</span><span style="font-size: 22px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2">' + esc(m.t) + '</span><span class="small">' + esc(m.src) + '</span></span>' +
-        '<span class="mface back"><span class="kicker" style="color: inherit; opacity: .7">В Мнеме</span><span style="font-size: 19px; line-height: 1.35; font-weight: 500">' + esc(m.inapp) + '</span><span style="font-size: 13px; opacity: .7">Нажми, чтобы вернуть</span></span>' +
+        '<span class="mface back"><span class="kicker" style="color: inherit; opacity: .7">В Refrain</span><span style="font-size: 19px; line-height: 1.35; font-weight: 500">' + esc(m.inapp) + '</span><span style="font-size: 13px; opacity: .7">Нажми, чтобы вернуть</span></span>' +
         '</span></button>';
     }).join('');
     var myths = D.myths.map(function (m, i) {
@@ -583,7 +583,7 @@
         '<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: flex-start">' +
           '<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px"><h2 style="font-size: 26px; font-weight: 600; letter-spacing: -0.015em">Кривая забывания</h2>' +
           '<p class="muted" style="font-size: 16px">Нажми на график — добавишь повторение. Число на точке — день повторения, точки можно двигать. Каждое повторение делает память прочнее, и забывание замедляется.</p></div>' +
-          '<div style="display: flex; gap: 8px; flex-wrap: wrap"><button type="button" class="btn btn-primary btn-sm" data-act="curve-preset">Как в Мнеме</button><button type="button" class="btn btn-ghost btn-sm" data-act="curve-reset">Сбросить</button></div>' +
+          '<div style="display: flex; gap: 8px; flex-wrap: wrap"><button type="button" class="btn btn-primary btn-sm" data-act="curve-preset">Как в Refrain</button><button type="button" class="btn btn-ghost btn-sm" data-act="curve-reset">Сбросить</button></div>' +
         '</div>' +
         '<div class="curve-box" data-curve>' +
           '<svg viewBox="0 0 800 340" preserveAspectRatio="none" aria-hidden="true">' +
@@ -597,9 +597,9 @@
         '</div>' +
         '<div class="readout"><div><b class="accent-text" data-c-with></b><span class="small">помнишь на 30-й день · повторений: <span data-c-count></span></span></div>' +
           '<div><b style="color: var(--warm-text)" data-c-without></b><span class="small">без повторений</span></div>' +
-          '<p class="small" style="max-width: 360px">Модель для наглядности: R = e^(−t/S), каждое повторение увеличивает прочность S. В Мнеме расписание считает алгоритм FSRS по твоим ответам.</p></div>' +
+          '<p class="small" style="max-width: 360px">Модель для наглядности: R = e^(−t/S), каждое повторение увеличивает прочность S. В Refrain расписание считает алгоритм FSRS по твоим ответам.</p></div>' +
       '</section>' +
-      '<section class="sec-gap" style="margin-top: 120px"><div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px" data-reveal><div class="kicker">Приёмы</div><h2 class="serif h-sec">Каждый — уже внутри Мнемы.</h2><p class="lead">Нажми на карточку: на обороте — где этот приём в приложении.</p></div>' +
+      '<section class="sec-gap" style="margin-top: 120px"><div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px" data-reveal><div class="kicker">Приёмы</div><h2 class="serif h-sec">Каждый — уже внутри Refrain.</h2><p class="lead">Нажми на карточку: на обороте — где этот приём в приложении.</p></div>' +
         '<div class="mgrid">' + methods + '</div></section>' +
       '<section class="sec-gap" style="margin-top: 120px"><div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px" data-reveal><div class="kicker">Мифов нет</div><h2 class="serif h-sec">Что не работает — и что вместо.</h2></div>' +
         '<div style="display: flex; flex-direction: column; gap: 12px">' + myths + '</div>' +
@@ -669,8 +669,8 @@
       }) + '</div></div>';
     }).join('');
     return '<main class="page wrap" id="main" tabindex="-1" style="max-width: 900px">' +
-      '<div class="ptitle"><div class="kicker">Что нового</div><h1 class="serif h-large">Мнема растёт.</h1>' +
-      '<p class="lead">Раз в день Мнема сама проверяет выпуски и предлагает обновиться. Карточки, предметы и настройки при обновлении сохраняются.</p></div>' +
+      '<div class="ptitle"><div class="kicker">Что нового</div><h1 class="serif h-large">Refrain растёт.</h1>' +
+      '<p class="lead">Раз в день Refrain сам проверяет выпуски и предлагает обновиться. Карточки, предметы и настройки при обновлении сохраняются.</p></div>' +
       '<div class="tl" data-tl style="margin-top: 56px"><div class="tl-line"><div class="tl-fill" data-tl-fill></div></div>' + items + '</div>' +
       '<a class="btn btn-ghost" style="margin-top: 20px" href="https://github.com/' + REPO + '/releases">Все выпуски на GitHub ›</a>' +
     '</main>';
@@ -691,12 +691,12 @@
   function pageDownload() {
     return '<main class="page wrap" id="main" tabindex="-1">' +
       '<div class="ptitle" style="align-items: center; text-align: center"><div class="kicker" data-dl-kicker></div>' +
-      '<h1 class="serif h-large">Мнема на твоём устройстве.</h1><p class="lead">Бесплатно. Без аккаунта и рекламы. Учится и работает без интернета.</p>' +
+      '<h1 class="serif h-large">Refrain на твоём устройстве.</h1><p class="lead">Бесплатно. Без аккаунта и рекламы. Учится и работает без интернета.</p>' +
       '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(3, 150px); margin-top: 8px"><span class="seg-thumb" data-plat-thumb style="width: 150px"></span>' +
         '<button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="web" data-act="plat" data-arg="web">В браузере</button></div></div>' +
       '<div class="dl-grid" style="margin-top: 56px">' +
         '<div class="dev-stage" data-dev-stage><div class="device" data-dev><div class="screen" data-screen>' +
-          '<div class="app-side" data-side><b style="font-size: 13px; display: flex; gap: 6px; align-items: center"><span class="logo" style="width: 20px; height: 20px; border-radius: 6px; font-size: 12px">М</span>Мнема</b>' +
+          '<div class="app-side" data-side><b style="font-size: 13px; display: flex; gap: 6px; align-items: center"><span class="logo" style="width: 20px; height: 20px; border-radius: 6px; font-size: 12px">R</span>Refrain</b>' +
             '<span style="width: 80%; margin-top: 8px"></span><span style="width: 64%"></span><span style="width: 72%"></span><span style="width: 56%"></span><span style="width: 68%"></span></div>' +
           '<div class="app-main"><div style="display: flex; justify-content: space-between; align-items: baseline"><b class="serif" style="font-size: 24px">Сегодня</b><span style="font-size: 12px; color: #64666F">ждут повторения</span></div>' +
             '<div class="app-learn">Учиться</div><div class="app-time"><span>5 мин</span><span class="on">10 мин</span><span>20 мин</span><span>Всё</span></div>' +
@@ -739,15 +739,15 @@
     q('[data-plat-steps]').innerHTML = win ?
       '<ol class="steps"><li><span><b>Скачай установщик</b><br><span class="muted mono" style="font-size: 14px">' + esc(relFile('win')) + '</span></span></li>' +
       '<li><span><b>Запусти и следуй установщику</b><br><span class="muted">Можно включить автозапуск и значок у часов.</span></span></li>' +
-      '<li><span><b>Дальше — само</b><br><span class="muted">Мнема раз в день проверяет выпуски и предлагает обновиться.</span></span></li></ol>' :
+      '<li><span><b>Дальше — само</b><br><span class="muted">Refrain раз в день проверяет выпуски и предлагает обновиться.</span></span></li></ol>' :
       plat === 'android' ?
       '<ol class="steps"><li><span><b>Скачай APK на телефон</b><br><span class="muted mono" style="font-size: 14px">' + esc(relFile('android')) + '</span></span></li>' +
       '<li><span><b>Открой и разреши установку</b><br><span class="muted">Из этого источника — один раз.</span></span></li>' +
       '<li><span><b>Перенеси карточки с компьютера</b><br><span class="muted">По Wi-Fi: код из 12 знаков или QR — и готово.</span></span></li></ol>' :
-      '<ol class="steps"><li><span><b>Открой Мнему в браузере</b><br><span class="muted">Ничего ставить не нужно: Chrome, Edge, Safari или Firefox на любом устройстве.</span></span></li>' +
+      '<ol class="steps"><li><span><b>Открой Refrain в браузере</b><br><span class="muted">Ничего ставить не нужно: Chrome, Edge, Safari или Firefox на любом устройстве.</span></span></li>' +
       '<li><span><b>Поставь как приложение</b><br><span class="muted">Компьютер и Android: кнопка «Установить» в адресной строке или в меню. iPhone и iPad: Safari → «Поделиться» → «На экран „Домой“».</span></span></li>' +
       '<li><span><b>Учись без интернета</b><br><span class="muted">После первого открытия всё работает офлайн. Данные лежат в браузере этого устройства — копию можно сохранить в «Настройки → Данные».</span></span></li></ol>';
-    var cta = q('[data-plat-cta]'); cta.textContent = win ? 'Скачать Mnema-Setup.exe' : plat === 'android' ? 'Скачать APK' : 'Открыть онлайн';
+    var cta = q('[data-plat-cta]'); cta.textContent = win ? 'Скачать ' + relFile('win') : plat === 'android' ? 'Скачать APK' : 'Открыть онлайн';
     cta.setAttribute('href', relUrl(plat));
   }
 
@@ -789,7 +789,7 @@
   function pageDocs() {
     return '<div class="d-prog" aria-hidden="true"><span data-doc-prog></span></div>' +
       '<main class="page wrap" id="main" tabindex="-1">' +
-      '<div class="ptitle" style="padding-top: 64px"><div class="kicker">Документация</div><h1 class="serif h-large">Как пользоваться Мнемой.</h1><p class="lead">От первой карточки до своих модов — простыми словами.</p></div>' +
+      '<div class="ptitle" style="padding-top: 64px"><div class="kicker">Документация</div><h1 class="serif h-large">Как пользоваться Refrain.</h1><p class="lead">От первой карточки до своих модов — простыми словами.</p></div>' +
       '<div class="d-layout" data-doc-top>' +
         '<aside class="d-side">' +
           '<label class="search" style="max-width: none; min-width: 0; width: 100%; flex: none">' + SVG.search + '<span class="sr-only">Поиск по документации</span><input type="search" placeholder="Поиск: Wi-Fi, формулы, app.data…" value="' + esc(S.docQ) + '" data-input="docq"></label>' +
@@ -836,7 +836,7 @@
   }
   function labJson() {
     var on = labDefs.filter(function (d) { return S.lab[d[0]]; });
-    return JSON.stringify({ kind: 'mnema-mod', name: on.length ? on.map(function (x) { return x[1]; }).join(' + ') : 'Мой стиль', description: 'Собрано в документации Мнемы', author: 'Я', where: 'при повторении', css: labCss() || '/* включи хотя бы один стиль */' }, null, 2);
+    return JSON.stringify({ kind: 'mnema-mod', name: on.length ? on.map(function (x) { return x[1]; }).join(' + ') : 'Мой стиль', description: 'Собрано в документации Refrain', author: 'Я', where: 'при повторении', css: labCss() || '/* включи хотя бы один стиль */' }, null, 2);
   }
   function genCode() {
     var gn = S.gen;
@@ -903,7 +903,7 @@
         (prev ? '<a class="d-pg" href="#/docs/' + prev.id + '"><span class="small">← Назад</span><b>' + esc(prev.t) + '</b></a>' : '') +
         (next ? '<a class="d-pg next" href="#/docs/' + next.id + '"><span class="small">Дальше →</span><b>' + esc(next.t) + '</b></a>' : '') +
       '</div>';
-    document.title = doc.t + ' — документация Мнемы';
+    document.title = doc.t + ' — документация Refrain';
     if (animate) {
       if (art.animate && !reduce) art.animate([{ opacity: 0, transform: 'translateY(16px)', filter: 'blur(4px)' }, { opacity: 1, transform: 'none', filter: 'none' }], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
       var top = $('[data-doc-top]');
@@ -929,7 +929,7 @@
 
   // ───── показ страницы ─────
   var PAGES = { home: pageHome, features: pageFeatures, science: pageScience, updates: pageUpdates, download: pageDownload, docs: pageDocs };
-  var TITLES = { home: 'Мнема — запоминай больше, учи меньше', features: 'Возможности — Мнема', science: 'Наука — Мнема', updates: 'Что нового — Мнема', download: 'Скачать — Мнема', docs: 'Документация — Мнема' };
+  var TITLES = { home: 'Refrain — запоминай больше, учи меньше', features: 'Возможности — Refrain', science: 'Наука — Refrain', updates: 'Что нового — Refrain', download: 'Скачать — Refrain', docs: 'Документация — Refrain' };
 
   function renderPage() {
     app.innerHTML = PAGES[S.page]();

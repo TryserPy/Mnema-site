@@ -1,4 +1,4 @@
-/* Мнема — интерфейс для телефона: вкладки, экраны со стеком, шторка. Включается только в мобильном режиме (см. index.html). */
+/* Refrain — интерфейс для телефона: вкладки, экраны со стеком, шторка. Включается только в мобильном режиме (см. index.html). */
 (function () {
   'use strict';
   if (!window.MNEMA_MOBILE) return;
@@ -71,7 +71,7 @@
     chevD: function (size, open, rot) { return '<svg class="chev" style="transform: rotate(' + (open ? rot : 0) + 'deg)" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (rot === 90 ? 'M9 6l6 6-6 6' : 'M6 9l6 6 6-6') + '"></path></svg>'; },
     dl: function (s) { return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>'; },
     search: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>',
-    logo: function (cls) { return '<span class="mlogo ' + cls + '" aria-hidden="true"><span class="mlogo-bg"></span><svg viewBox="0 0 32 32"><path d="M8 23 V9.5 L16 18.5 L24 9.5 V23"></path></svg><span class="mlogo-dot"></span></span>'; },
+    logo: function (cls) { return '<span class="mlogo ' + cls + '" aria-hidden="true"><span class="mlogo-bg"></span><span class="mlogo-ring"></span><svg viewBox="0 0 32 32"><path class="echo e2" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="echo e1" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="r" pathLength="100" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path></svg><span class="mlogo-dot"></span></span>'; },
     info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 7.5v.5"></path></svg>',
     warn: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"></path><path d="M12 10v4.5"></path><path d="M12 17.5v.5"></path></svg>'
   };
@@ -143,7 +143,7 @@
 
   function renderBar() {
     E.bar.innerHTML = S.tab === 'home' ?
-      '<button class="brand" type="button" data-logo data-act="logo" aria-label="Мнема">' + ICON.logo('play') + '<span>Мнема</span></button>' +
+      '<button class="brand" type="button" data-logo data-act="logo" aria-label="Refrain">' + ICON.logo('play') + '<span>Refrain</span></button>' +
       '<button type="button" class="pill-btn" data-act="download">Скачать</button>' :
       '<span class="bar-title">' + esc(D.barTitles[S.tab]) + '</span>';
     E.fab.style.display = S.tab === 'home' ? '' : 'none';
@@ -170,7 +170,7 @@
 
     return '<div class="screen">' +
       '<section class="hero">' +
-        '<button type="button" class="eyebrow" data-act="push" data-arg="updates"><b>1.27</b><span>Мнема онлайн: в браузере и на iPhone</span><span aria-hidden="true">›</span></button>' +
+        '<button type="button" class="eyebrow" data-act="push" data-arg="updates"><b>1.27</b><span>Refrain онлайн: в браузере и на iPhone</span><span aria-hidden="true">›</span></button>' +
         '<h1 class="serif hero-h">Запоминай больше.<br><span class="accent-text">Учи меньше.</span></h1>' +
         '<p class="hero-p">Параграф → конспект → карточки → повторения по расписанию. Попробуй — смахни карточку.</p>' +
         '<div class="sw-wrap"><div class="sw-area">' + deck + '<div data-deck-done></div></div>' +
@@ -189,7 +189,7 @@
       '<section class="sec" style="padding-top: 90px; padding-bottom: 14px"><p class="words" data-words aria-label="' + esc(D.words) + '">' + words + '</p></section>' +
 
       '<section class="sec" data-reveal><div class="kicker">Сегодня</div><h2 class="serif sec-h">Одна кнопка. Остальное — расписание.</h2>' +
-        '<p class="sec-p">Скажи, сколько у тебя минут, — Мнема наберёт ровно столько карточек.</p>' +
+        '<p class="sec-p">Скажи, сколько у тебя минут, — Refrain наберёт ровно столько карточек.</p>' +
         '<div class="widget"><div class="w-top"><div class="ring" aria-hidden="true"><svg viewBox="0 0 118 118"><circle class="track" cx="59" cy="59" r="52"></circle><circle class="val" data-ring cx="59" cy="59" r="52"></circle></svg>' +
           '<div class="ring-c"><b data-ring-num>0</b><span class="small" style="margin-top: 4px" data-ring-total></span></div></div>' +
           '<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><b style="font-size: 19px; letter-spacing: -0.01em" data-w-title></b><span class="small" style="font-size: 14px" data-w-sub></span></div></div>' +
@@ -200,7 +200,7 @@
       '<section class="sec" data-reveal><div class="kicker">Как это работает</div><h2 class="serif sec-h">Четыре шага. Листай →</h2>' +
         '<div class="car" data-car style="margin-top: 14px">' +
           '<article class="car-card" data-car-card><div class="il"><div class="pg"><div class="scan"></div><i style="width: 70%; height: 9px; background: #CFC6B3"></i><i></i><i style="width: 92%"></i><i style="width: 84%"></i><i style="width: 60%"></i></div><span class="vf a"></span><span class="vf b"></span><span class="vf c"></span><span class="vf d"></span></div>' +
-            '<span class="mono small">01 / 04</span><h3 class="serif">Сфотографируй параграф</h3><p>Мнема распознаёт страницы даже без интернета: находит жирное, рисунки и рамки «Запомните».</p></article>' +
+            '<span class="mono small">01 / 04</span><h3 class="serif">Сфотографируй параграф</h3><p>Refrain распознаёт страницы даже без интернета: находит жирное, рисунки и рамки «Запомните».</p></article>' +
           '<article class="car-card" data-car-card><div class="il"><div class="pg"><i style="width: 60%; height: 9px; background: #CFC6B3"></i><i style="width: 100%"></i><span class="hl" style="width: 70%"></span><i style="width: 90%"></i><span class="hl" style="width: 45%"></span><i style="width: 80%"></i><span class="hl" style="width: 60%"></span></div></div>' +
             '<span class="mono small">02 / 04</span><h3 class="serif">Важное подсветится само</h3><p>Определения, даты, имена и формулы. Пиши как в обычном редакторе — формулы собираются визуально.</p></article>' +
           '<article class="car-card" data-car-card><div class="il"><div class="mc m1">988</div><div class="mc m2">Владимир</div><div class="mc m3">Византия</div></div>' +
@@ -217,7 +217,7 @@
           tile('', 'anyai', '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path>', ' c-ai', 'Любой ИИ', 'Свой ключ или модель', '<span class="anim" style="flex-wrap: wrap"><span class="chip">Claude</span><span class="chip">Gemini</span></span>') +
           tile('', 'poems', '<path d="M5 5h14M5 10h14M5 15h9M5 20h6"></path>', '', 'Стихи наизусть', 'Подсказки тают', '<span class="anim serif" style="font-size: 16px; color: var(--accent-text)">Я п… ч… м…</span>') +
           tile('', 'wifi', '<path d="M3 9a14 14 0 0 1 18 0M6 12.5a9.5 9.5 0 0 1 12 0M9 16a5 5 0 0 1 6 0"></path><path d="M12 19.5h.01"></path>', ' c-data', 'Синхронизация по Wi‑Fi', 'Шифруется кодом', '<span class="anim"><span class="wire"><span class="packet"></span><span class="packet"></span></span></span>') +
-          tile(' wide', 'anki', '<path d="M7 7h11l-3-3M17 17H6l3 3"></path>', ' c-data', 'Anki ⇄ Мнема ⇄ Obsidian', 'Данные в открытых форматах — ты не привязан', '<span class="anim" style="flex-wrap: wrap"><span class="chip mono">.apkg</span><span class="chip mono">.md</span><span class="chip mono">.mnema</span></span>') +
+          tile(' wide', 'anki', '<path d="M7 7h11l-3-3M17 17H6l3 3"></path>', ' c-data', 'Anki ⇄ Refrain ⇄ Obsidian', 'Данные в открытых форматах — ты не привязан', '<span class="anim" style="flex-wrap: wrap"><span class="chip mono">.apkg</span><span class="chip mono">.md</span><span class="chip mono">.mnema</span></span>') +
         '</div>' +
         '<button type="button" class="pill-btn" style="margin: 14px 16px 0; background: var(--bg2); color: var(--ink); height: 44px; width: calc(100% - 32px)" data-act="tab" data-arg="feat">Все возможности ›</button>' +
       '</section>' +
@@ -235,7 +235,7 @@
         '<a class="btn primary wide" href="' + WEBAPP + '">Открыть онлайн</a>' +
         '<button type="button" class="btn ghost wide" data-act="download" data-arg="android">Скачать для Android</button>' +
         '<button type="button" class="btn ghost wide" data-act="download" data-arg="win">Скачать для Windows</button>' +
-      '</div><p class="small" style="text-align: center; padding: 22px 20px 0">© 2026 Мнема · открытый код</p></section>' +
+      '</div><p class="small" style="text-align: center; padding: 22px 20px 0">© 2026 Refrain · открытый код</p></section>' +
     '</div>';
   }
 
@@ -288,7 +288,7 @@
     var methods = D.methods.map(function (m, i) {
       return '<button type="button" class="mcard" data-act="methflip" data-arg="' + i + '" aria-label="' + esc(m.t) + ' — перевернуть"><span class="flip" style="transform: rotateY(0deg)">' +
         '<span class="mface"><span class="ev"><i><b style="width: ' + m.w + '"></b></i>' + esc(m.ev) + '</span><span style="font-size: 21px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2">' + esc(m.t) + '</span><span class="small">' + esc(m.src) + '</span></span>' +
-        '<span class="mface back"><span class="small" style="color: inherit; opacity: .7; font-weight: 600; letter-spacing: .06em; text-transform: uppercase">В Мнеме</span><span style="font-size: 18px; line-height: 1.35; font-weight: 500">' + esc(m.inapp) + '</span><span style="font-size: 12.5px; opacity: .7">Нажми — вернуть</span></span>' +
+        '<span class="mface back"><span class="small" style="color: inherit; opacity: .7; font-weight: 600; letter-spacing: .06em; text-transform: uppercase">В Refrain</span><span style="font-size: 18px; line-height: 1.35; font-weight: 500">' + esc(m.inapp) + '</span><span style="font-size: 12.5px; opacity: .7">Нажми — вернуть</span></span>' +
         '</span></button>';
     }).join('');
     var myths = D.myths.map(function (m, i) {
@@ -303,9 +303,9 @@
           '<path data-c="base" fill="none" stroke-width="2" stroke-dasharray="5 5" style="stroke: var(--warm)"></path><path data-c="area" stroke="none" style="fill: var(--accent-soft)"></path><path data-c="line" fill="none" stroke-width="3" stroke-linejoin="round" style="stroke: var(--accent-text)"></path>' +
         '</svg></div>' +
         '<div class="readout"><div><b class="accent-text" data-c-with></b><span class="small">с повторениями: <span data-c-count></span></span></div><div><b style="color: var(--warm-text)" data-c-without></b><span class="small">без повторений</span></div></div>' +
-        '<div style="display: flex; gap: 8px"><button type="button" class="pill-btn" data-act="curve-preset">Как в Мнеме</button><button type="button" class="pill-btn" style="background: var(--bg2); color: var(--ink)" data-act="curve-reset">Сбросить</button></div>' +
-        '<p class="small">Модель для наглядности: R = e^(−t/S); каждое повторение увеличивает прочность S. В Мнеме расписание считает алгоритм FSRS.</p></div>' +
-      '<div style="padding-top: 40px"><div class="kicker">Приёмы</div><h2 class="serif sec-h" style="margin-bottom: 4px">Каждый — уже в Мнеме.</h2><p class="sec-p" style="margin-bottom: 8px">Нажми карточку — на обороте, где этот приём в приложении.</p><div class="mcar">' + methods + '</div></div>' +
+        '<div style="display: flex; gap: 8px"><button type="button" class="pill-btn" data-act="curve-preset">Как в Refrain</button><button type="button" class="pill-btn" style="background: var(--bg2); color: var(--ink)" data-act="curve-reset">Сбросить</button></div>' +
+        '<p class="small">Модель для наглядности: R = e^(−t/S); каждое повторение увеличивает прочность S. В Refrain расписание считает алгоритм FSRS.</p></div>' +
+      '<div style="padding-top: 40px"><div class="kicker">Приёмы</div><h2 class="serif sec-h" style="margin-bottom: 4px">Каждый — уже в Refrain.</h2><p class="sec-p" style="margin-bottom: 8px">Нажми карточку — на обороте, где этот приём в приложении.</p><div class="mcar">' + methods + '</div></div>' +
       '<div style="padding-top: 30px"><div class="kicker">Мифов нет</div><h2 class="serif sec-h" style="margin-bottom: 14px">Что не работает.</h2><div class="group" style="margin-bottom: 8px">' + myths + '</div>' +
         '<p class="foot" style="margin-top: 12px">Источники: Dunlosky и др., 2013; Cepeda и др., 2008; Pashler и др., 2008; Rawson и Dunlosky; руководство Anki по FSRS.</p></div>' +
     '</div>';
@@ -325,7 +325,7 @@
     }).join('');
     return '<div class="screen"><h1 class="lt">Ещё</h1>' +
       '<div class="about"><button type="button" class="mlogo-big" style="width: 60px; height: 60px" data-logo data-act="logo" aria-label="Показать анимацию логотипа">' + ICON.logo('play') + '</button>' +
-        '<div style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 20px">Мнема ' + esc(relVer()) + '</b><span class="small" style="font-size: 14px">Windows, Android и браузер · без аккаунта и рекламы</span></div></div>' +
+        '<div style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 20px">Refrain ' + esc(relVer()) + '</b><span class="small" style="font-size: 14px">Windows, Android и браузер · без аккаунта и рекламы</span></div></div>' +
       '<div class="group">' + rows + '</div>' +
       '<div class="gtitle">Вид</div><div class="group">' +
         '<div class="row" style="cursor: default"><span class="rt"><b>Тёмная тема</b></span><button type="button" role="switch" class="switch' + (S.dark ? ' on' : '') + '" aria-checked="' + S.dark + '" aria-label="Тёмная тема" data-act="dark"><span class="knob"></span></button></div>' +
@@ -338,7 +338,7 @@
   }
 
   var SCREENS = { home: screenHome, feat: screenFeat, sci: screenSci, more: screenMore };
-  var TITLES = { home: 'Мнема — запоминай больше, учи меньше', feat: 'Возможности — Мнема', sci: 'Наука — Мнема', more: 'Ещё — Мнема' };
+  var TITLES = { home: 'Refrain — запоминай больше, учи меньше', feat: 'Возможности — Refrain', sci: 'Наука — Refrain', more: 'Ещё — Refrain' };
 
   function renderTab() {
     E.sc.innerHTML = SCREENS[S.tab]();
@@ -392,7 +392,7 @@
     $$('[data-min]', E.sc).forEach(function (b) { var on = +b.getAttribute('data-min') === S.mins; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
     $('[data-ring-total]', E.sc).textContent = 'из ' + mo[1];
     $('[data-w-title]', E.sc).textContent = S.learned ? 'Сессия пройдена' : mo[1] + ' карточек на ' + mo[0].toLowerCase();
-    $('[data-w-sub]', E.sc).textContent = S.learned ? 'Следующие повторения Мнема уже назначила' : mo[2];
+    $('[data-w-sub]', E.sc).textContent = S.learned ? 'Следующие повторения Refrain уже назначил' : mo[2];
     $('[data-learn]', E.sc).textContent = S.learned ? '✓ Готово — ещё раз' : 'Учиться';
   }
 
@@ -466,7 +466,7 @@
 
   function layerBody(it) {
     if (it.k === 'updates') {
-      return '<div class="lpage"><h1 class="lt">Что нового</h1><p class="lead">Раз в день Мнема сама проверяет выпуски. Карточки и настройки при обновлении сохраняются.</p>' +
+      return '<div class="lpage"><h1 class="lt">Что нового</h1><p class="lead">Раз в день Refrain сам проверяет выпуски. Карточки и настройки при обновлении сохраняются.</p>' +
         D.versions.map(function (v, i) {
           return '<div class="vcard">' + accHtml('vhead', i === 0, '<span class="vnum">' + esc(v.v) + '</span><span style="flex: 1; font-size: 16px; font-weight: 600; line-height: 1.3">' + esc(v.t) + '</span>' + ICON.chevD(20, i === 0, 180),
             '<ul>' + v.items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>', 180).replace(/^<div class="">|<\/div>$/g, '') + '</div>';
@@ -571,7 +571,7 @@
 
   function afterLayer(el, it) {
     if (it.k === 'download') applyPlat(el, true);
-    document.title = layerTitle(it) + ' — Мнема';
+    document.title = layerTitle(it) + ' — Refrain';
   }
 
   function push(it, noHistory) {
@@ -602,7 +602,7 @@
       S.stack.pop(); S.popping = false;
       updateTabs();
       var it = S.stack[S.stack.length - 1];
-      document.title = it ? layerTitle(it) + ' — Мнема' : TITLES[S.tab];
+      document.title = it ? layerTitle(it) + ' — Refrain' : TITLES[S.tab];
       if (!fromHistory) setHash(layerHash(it), false);
     }, M() ? 340 : 0);
   }
@@ -620,7 +620,7 @@
     sc.innerHTML = layerBody(S.stack[i]);
     sc.scrollTop = 0;
     if (sc.animate && M()) sc.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
-    document.title = layerTitle(S.stack[i]) + ' — Мнема';
+    document.title = layerTitle(S.stack[i]) + ' — Refrain';
     setHash(layerHash(S.stack[i]), false);
   }
 
@@ -652,10 +652,10 @@
     if (first) { void dev.offsetWidth; parts.forEach(function (p) { p.style.transition = ''; }); }
     q('[data-plat-title]').textContent = win ? 'Для Windows' : S.plat === 'android' ? 'Для Android' : 'В браузере (в том числе iPhone и iPad)';
     q('[data-plat-steps]').innerHTML = S.plat === 'web' ?
-      '<ol class="steps"><li><span><b>Открой Мнему в браузере</b><br><span class="muted">Ничего ставить не нужно: Chrome, Edge, Safari или Firefox.</span></span></li><li><span><b>Поставь как приложение</b><br><span class="muted">Android: «Установить» в меню Chrome. iPhone и iPad: Safari → «Поделиться» → «На экран „Домой“».</span></span></li><li><span><b>Учись без интернета</b><br><span class="muted">После первого открытия всё работает офлайн. Данные лежат в браузере этого устройства — копию можно сохранить в «Настройки → Данные».</span></span></li></ol>' : win ?
-      '<ol class="steps"><li><span><b>Скачай установщик</b><br><span class="muted mono" style="font-size: 13px">' + esc(relFile('win')) + '</span></span></li><li><span><b>Запусти и следуй установщику</b><br><span class="muted">Можно включить автозапуск и значок у часов.</span></span></li><li><span><b>Дальше — само</b><br><span class="muted">Мнема раз в день проверяет выпуски.</span></span></li></ol>' :
+      '<ol class="steps"><li><span><b>Открой Refrain в браузере</b><br><span class="muted">Ничего ставить не нужно: Chrome, Edge, Safari или Firefox.</span></span></li><li><span><b>Поставь как приложение</b><br><span class="muted">Android: «Установить» в меню Chrome. iPhone и iPad: Safari → «Поделиться» → «На экран „Домой“».</span></span></li><li><span><b>Учись без интернета</b><br><span class="muted">После первого открытия всё работает офлайн. Данные лежат в браузере этого устройства — копию можно сохранить в «Настройки → Данные».</span></span></li></ol>' : win ?
+      '<ol class="steps"><li><span><b>Скачай установщик</b><br><span class="muted mono" style="font-size: 13px">' + esc(relFile('win')) + '</span></span></li><li><span><b>Запусти и следуй установщику</b><br><span class="muted">Можно включить автозапуск и значок у часов.</span></span></li><li><span><b>Дальше — само</b><br><span class="muted">Refrain раз в день проверяет выпуски.</span></span></li></ol>' :
       '<ol class="steps"><li><span><b>Скачай APK на телефон</b><br><span class="muted mono" style="font-size: 13px">' + esc(relFile('android')) + '</span></span></li><li><span><b>Открой и разреши установку</b><br><span class="muted">Из этого источника — один раз.</span></span></li><li><span><b>Перенеси карточки с компьютера</b><br><span class="muted">По Wi-Fi: код из 12 знаков или QR.</span></span></li></ol>';
-    var cta = q('[data-plat-cta]'); cta.textContent = win ? 'Скачать Mnema-Setup.exe' : S.plat === 'android' ? 'Скачать APK' : 'Открыть онлайн'; cta.setAttribute('href', relUrl(S.plat));
+    var cta = q('[data-plat-cta]'); cta.textContent = win ? 'Скачать ' + relFile('win') : S.plat === 'android' ? 'Скачать APK' : 'Открыть онлайн'; cta.setAttribute('href', relUrl(S.plat));
   }
 
   // ───── шторка ─────
@@ -670,7 +670,7 @@
       '<div class="sheet" data-sheet role="dialog" aria-modal="true" aria-label="' + esc(f.t) + '"><div class="sheet-grab" data-sheet-grab></div>' +
       '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px"><span class="tag">' + esc(D.cats[f.c]) + '</span><button type="button" class="done-btn" data-act="close-sheet">Готово</button></div>' +
       '<h2 class="serif" style="font-size: 30px; line-height: 1.1; margin-bottom: 12px">' + esc(f.t) + '</h2><p style="font-size: 17px; color: var(--ink2); margin-bottom: 20px">' + esc(f.more) + '</p>' +
-      '<div class="ios-group" style="margin-bottom: 18px"><div class="ios-row"><span class="muted">Где в Мнеме</span><b style="text-align: right">' + esc(f.where) + '</b></div><div class="ios-row sep"><span class="muted">Категория</span><b>' + esc(D.cats[f.c]) + '</b></div></div>' +
+      '<div class="ios-group" style="margin-bottom: 18px"><div class="ios-row"><span class="muted">Где в Refrain</span><b style="text-align: right">' + esc(f.where) + '</b></div><div class="ios-row sep"><span class="muted">Категория</span><b>' + esc(D.cats[f.c]) + '</b></div></div>' +
       '<div class="small" style="margin-bottom: 8px">Рядом в этой категории</div><div style="display: flex; flex-wrap: wrap; gap: 8px">' + rel + '</div></div></div>';
     var done = $('.done-btn', E.sheetRoot); if (done) done.focus({ preventScroll: true });
   }
@@ -902,7 +902,7 @@
     if (as.some(function (a) { return a.playState === 'running'; })) return;
     as.forEach(function (a) { a.currentTime = 0; a.play(); });
   }
-  function topFrom() { return S.stack.length ? layerTitle(S.stack[S.stack.length - 1]) : D.barTitles[S.tab] === 'Мнема' ? 'Главная' : D.barTitles[S.tab]; }
+  function topFrom() { return S.stack.length ? layerTitle(S.stack[S.stack.length - 1]) : D.barTitles[S.tab] === 'Refrain' ? 'Главная' : D.barTitles[S.tab]; }
 
   var ACT = {
     tab: function (el, a) { setTab(a); },

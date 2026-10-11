@@ -19,18 +19,28 @@
 .navlinks{position:relative;display:flex;align-items:center;background:var(--bg2);border-radius:999px;padding:3px}
 .navpill{position:absolute;top:3px;left:0;width:0;height:34px;border-radius:999px;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.08);transition:transform .55s cubic-bezier(.3,1.3,.5,1),width .55s cubic-bezier(.3,1.3,.5,1)}
 .navlink{position:relative;z-index:1;border:0;background:none;height:34px;padding:0 18px;border-radius:999px;cursor:pointer;font-size:14px;font-weight:500;color:var(--ink3);transition:color .3s;white-space:nowrap}
-/* логотип: точка → «М» → фон */
+/* ───── логотип Refrain: точка бежит по R, R прорисовывается, плитка «раскрывается», вокруг расходится эхо ───── */
 .mlogo{position:relative;display:inline-block;width:32px;height:32px;flex:none}
 .mlogo-bg{position:absolute;inset:0;border-radius:9px;background:var(--accent);box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
 .mlogo svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.mlogo path{fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:52;stroke-dashoffset:0}
-.mlogo-dot{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;background:var(--accent-text);offset-path:path('M8 23 V9.5 L16 18.5 L24 9.5 V23');offset-rotate:0deg;offset-anchor:50% 50%;opacity:0;pointer-events:none}
+.mlogo .r,.mlogo .echo{fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:0}
+.mlogo .echo{opacity:0;stroke-width:1.1;stroke-dasharray:none}
+.mlogo-dot{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;background:var(--accent-text);offset-path:path('M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10');offset-rotate:0deg;offset-anchor:50% 50%;opacity:0;pointer-events:none}
+.mlogo-ring{position:absolute;inset:0;border-radius:9px;border:1.5px solid var(--accent-text);opacity:0;pointer-events:none}
 .mlogo.play .mlogo-dot,.in .mlogo.auto .mlogo-dot{animation:mDot 1.6s cubic-bezier(.6,0,.3,1) both}
-.mlogo.play path,.in .mlogo.auto path{animation:mDraw 1.6s cubic-bezier(.6,0,.3,1) both}
+.mlogo.play .r,.in .mlogo.auto .r{animation:mDraw 1.6s cubic-bezier(.6,0,.3,1) both}
 .mlogo.play .mlogo-bg,.in .mlogo.auto .mlogo-bg{animation:mBg 1.6s cubic-bezier(.3,1.55,.5,1) both}
-@keyframes mDot{0%{opacity:1;offset-distance:0%;transform:scale(0)} 12%{transform:scale(1.8)} 20%{opacity:1;offset-distance:0%;transform:scale(1)} 68%{opacity:1;offset-distance:100%;transform:scale(1)} 80%,100%{opacity:0;offset-distance:100%;transform:scale(0)} }
-@keyframes mDraw{0%,20%{stroke-dashoffset:52;stroke:var(--accent-text)} 68%{stroke-dashoffset:0;stroke:var(--accent-text)} 86%,100%{stroke-dashoffset:0;stroke:#fff} }
-@keyframes mBg{0%,60%{opacity:0;transform:scale(.25);border-radius:50%} 100%{opacity:1;transform:scale(1);border-radius:9px} }
+.mlogo.play .echo.e1,.in .mlogo.auto .echo.e1{animation:mEcho 1.6s ease-out both;--dx:3.4px}
+.mlogo.play .echo.e2,.in .mlogo.auto .echo.e2{animation:mEcho 1.6s ease-out .05s both;--dx:6.8px}
+.mlogo.play .mlogo-ring,.in .mlogo.auto .mlogo-ring{animation:mRing 1.6s ease-out both}
+@keyframes mDot{0%{opacity:1;offset-distance:0%;transform:scale(0)}10%{transform:scale(1.8)}16%{opacity:1;offset-distance:0%;transform:scale(1)}40%{opacity:1;offset-distance:100%;transform:scale(1)}48%,100%{opacity:0;offset-distance:100%;transform:scale(0)}}
+@keyframes mDraw{0%,16%{stroke-dashoffset:100;stroke:var(--accent-text)}40%,42%{stroke-dashoffset:0;stroke:var(--accent-text)}47%,100%{stroke-dashoffset:0;stroke:#fff}}
+@keyframes mBg{0%,44%{opacity:0;transform:scale(.25);border-radius:50%}62%,100%{opacity:1;transform:scale(1);border-radius:9px}}
+/* эхо стартует сразу, как только R дорисована, и уходит вправо */
+@keyframes mEcho{0%,50%{opacity:0;transform:translateX(0)}56%{opacity:.75;transform:translateX(0)}100%{opacity:0;transform:translateX(var(--dx))}}
+@keyframes mRing{0%,50%{opacity:0;transform:scale(1)}56%{opacity:.6}100%{opacity:0;transform:scale(1.9)}}
+/* при наведении плитка чуть «дышит» */
+.brand:hover .mlogo-bg,.mlogo-big:hover .mlogo-bg{filter:brightness(1.08)}
 .mlogo-big{position:relative;display:block;flex:none;width:64px;height:64px;border:0;padding:0;background:none;cursor:pointer}
 .mlogo-big .mlogo{position:absolute;left:0;top:0;transform:scale(2);transform-origin:0 0}
 .navlink:hover{color:var(--ink)}
@@ -448,6 +458,7 @@
   .search{min-width:0;max-width:none;width:100%}
 }
 @media (prefers-reduced-motion:reduce){
+  .mlogo *{animation:none!important}
   .page,.steps li{animation:none}
   .scanbar,.typed span,.hand path,.chip,.poem .full,.poem .cue,.packet,.gnode.weak::after{animation:none}
 }
