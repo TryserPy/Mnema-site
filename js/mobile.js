@@ -8,15 +8,15 @@
   var RELEASES = 'https://github.com/' + REPO + '/releases/latest';
   // Веб-версия приложения лежит рядом с сайтом (папка app/): запускается в браузере и ставится как приложение, в том числе на iPhone и iPad.
   var WEBAPP = 'app/';
-  var FALLBACK_VER = '1.27.0';
-  var STYLE_SAMPLE = '{\n  "kind": "mnema-mod",\n  "name": "Стикеры + пастельные оценки",\n  "description": "Карточки как жёлтые стикеры",\n  "author": "Я",\n  "where": "при повторении",\n  "css": ".review-card { background: #FFF4A8 !important; color: #2B2610 !important; transform: rotate(-0.6deg); } .grade.good { background: #CFF1DC; color: #1F6B43; }"\n}';
+  var FALLBACK_VER = '1.29.0';
+  var STYLE_SAMPLE = '{\n  "kind": "refrain-style",\n  "formatVersion": 1,\n  "name": "Стикеры + пастельные оценки",\n  "description": "Карточки как жёлтые стикеры",\n  "author": "Я",\n  "version": "1.0",\n  "css": ".review-card { background: #FFF4A8 !important; color: #2B2610 !important; transform: rotate(-0.6deg); } .grade.good { background: #CFF1DC; color: #1F6B43; }"\n}';
 
   // документация та же, что на компьютере, но без интерактивных конструкторов
   var DOCS = docsData().map(function (g) {
     return Object.assign({}, g, { items: g.items.map(function (it) {
       var blocks = [];
       it.blocks.forEach(function (b) {
-        if (b.lab) { blocks.splice(-2, 2); blocks.push({ code: STYLE_SAMPLE, lang: 'Файл стиля · .mnemamod' }); return; }
+        if (b.lab) { blocks.splice(-2, 2); blocks.push({ h: 'Пример стиля' }, { code: STYLE_SAMPLE, lang: 'Файл стиля · .refrainstyle' }); return; }
         if (b.gen) { blocks.splice(-2, 2); return; }
         blocks.push(b);
       });
@@ -59,7 +59,7 @@
     gSel: null,
     filter: 'all', query: '', sheet: null,
     reps: [1, 3, 7, 16], methFlip: {},
-    plat: /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'web' : /Windows|Win64|Macintosh|X11/.test(navigator.userAgent) && !/Android/.test(navigator.userAgent) ? 'win' : 'android',
+    plat: /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'web' : /Android/.test(navigator.userAgent) ? 'android' : /Linux|X11/.test(navigator.userAgent) ? 'linux' : /Windows|Win64|Macintosh/.test(navigator.userAgent) ? 'win' : 'android',
     docQ: ''
   };
   var REL = null;
@@ -72,6 +72,7 @@
     chevD: function (size, open, rot) { return '<svg class="chev" style="transform: rotate(' + (open ? rot : 0) + 'deg)" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (rot === 90 ? 'M9 6l6 6-6 6' : 'M6 9l6 6 6-6') + '"></path></svg>'; },
     dl: function (s) { return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>'; },
     search: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>',
+    linux: function (n) { return '<svg width="' + n + '" height="' + n + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c-2.2 0-3.5 2-3.5 4.5 0 1.3-.4 2.2-1.2 3.4C6 12.5 5 14.5 5 16.5c0 1.2.6 2 1.8 2.4M12 3c2.2 0 3.5 2 3.5 4.5 0 1.3.4 2.2 1.2 3.4 1.3 1.6 2.3 3.6 2.3 5.6 0 1.2-.6 2-1.8 2.4M6.8 18.9c1-.9 2.2-.6 3.2.6h4c1-1.2 2.2-1.5 3.2-.6"></path><path d="M10.2 7.5v.5M13.8 7.5v.5"></path></svg>'; },
     logo: function (cls) { return '<span class="mlogo ' + cls + '" aria-hidden="true"><span class="mlogo-bg"></span><span class="mlogo-ring"></span><svg viewBox="0 0 32 32"><path class="echo e2" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="echo e1" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="r" pathLength="100" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path></svg><span class="mlogo-dot"></span></span>'; },
     info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 7.5v.5"></path></svg>',
     warn: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"></path><path d="M12 10v4.5"></path><path d="M12 17.5v.5"></path></svg>'
@@ -171,7 +172,7 @@
 
     return '<div class="screen">' +
       '<section class="hero">' +
-        '<button type="button" class="eyebrow" data-act="push" data-arg="updates"><b>1.27</b><span>Refrain онлайн — тестовая версия</span><span aria-hidden="true">›</span></button>' +
+        '<button type="button" class="eyebrow" data-act="push" data-arg="updates"><b>1.29</b><span>Новое: Linux, стили и Markdown</span><span aria-hidden="true">›</span></button>' +
         '<h1 class="serif hero-h">Запоминай больше.<br><span class="accent-text">Учи меньше.</span></h1>' +
         '<p class="hero-p">Параграф → конспект → карточки → повторения по расписанию. Попробуй — смахни карточку.</p>' +
         '<div class="sw-wrap"><div class="sw-area">' + deck + '<div data-deck-done></div></div>' +
@@ -184,9 +185,9 @@
         '</div>' +
         '<a class="btn primary wide" href="' + WEBAPP + '" style="margin-top: 6px">Открыть онлайн <span class="tchip">тест</span></a>' +
         '<button type="button" class="btn ghost wide" data-act="download" style="margin-top: 8px">' + ICON.dl(20) + 'Скачать приложение</button>' +
-        '<p class="webnote" style="margin-top: 10px; text-align: center">Онлайн-версия — только для тестов: данные остаются в этом браузере и могут пропасть. Для постоянной учёбы — Windows или Android.</p>' +
+        '<p class="webnote" style="margin-top: 10px; text-align: center">Онлайн-версия — только для тестов: данные остаются в этом браузере и могут пропасть. Для постоянной учёбы — Windows, Linux или Android.</p>' +
       '</section>' +
-      '<div class="hs" style="margin-top: 16px"><span class="fact">Windows и Android</span><span class="fact">Без аккаунта</span><span class="fact">Без рекламы</span><span class="fact">Работает офлайн</span></div>' +
+      '<div class="hs" style="margin-top: 16px"><span class="fact">Windows, Linux и Android</span><span class="fact">Без аккаунта</span><span class="fact">Без рекламы</span><span class="fact">Работает офлайн</span></div>' +
 
       '<section class="sec" style="padding-top: 90px; padding-bottom: 14px"><p class="words" data-words aria-label="' + esc(D.words) + '">' + words + '</p></section>' +
 
@@ -233,10 +234,11 @@
       '<section class="sec" data-reveal><div class="cta">' +
         '<button type="button" class="mlogo-big" data-logo data-act="logo" aria-label="Показать анимацию логотипа">' + ICON.logo('auto') + '</button>' +
         '<h2 class="serif" style="font-size: 32px; line-height: 1.06; letter-spacing: -0.03em">Учёба, которая остаётся в голове.</h2>' +
-        '<p style="font-size: 16px; opacity: .78">Бесплатно для Windows и Android. Онлайн-версия в браузере — только для тестов.</p>' +
+        '<p style="font-size: 16px; opacity: .78">Бесплатно для Windows, Linux и Android. Онлайн-версия в браузере — только для тестов.</p>' +
         '<a class="btn primary wide" href="' + WEBAPP + '">Открыть онлайн <span class="tchip">тест</span></a>' +
         '<button type="button" class="btn ghost wide" data-act="download" data-arg="android">Скачать для Android</button>' +
         '<button type="button" class="btn ghost wide" data-act="download" data-arg="win">Скачать для Windows</button>' +
+        '<button type="button" class="btn ghost wide" data-act="download" data-arg="linux">' + ICON.linux(20) + 'Скачать для Linux</button>' +
       '</div><p class="small" style="text-align: center; padding: 22px 20px 0">© 2026 Refrain · открытый код</p></section>' +
     '</div>';
   }
@@ -314,7 +316,7 @@
   }
 
   var MORE = [
-    { t: 'Скачать', d: 'Windows, Android и онлайн-тест', icon: 'M12 4v11M7 10l5 5 5-5M5 20h14', cls: '', k: 'download' },
+    { t: 'Скачать', d: 'Windows, Linux, Android и онлайн-тест', icon: 'M12 4v11M7 10l5 5 5-5M5 20h14', cls: '', k: 'download' },
     { t: 'Что нового', d: 'Версия ' + FALLBACK_VER, icon: 'M12 3l2.2 5.3L20 9l-4.4 3.8L17 18.5 12 15.6 7 18.5l1.4-5.7L4 9l5.8-.7z', cls: ' c-review', k: 'updates' },
     { t: 'Документация', d: 'От первой карточки до своих модов', icon: 'M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5zM5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6M9 11h4', cls: ' c-data', k: 'docs' },
     { t: 'Моды', d: 'Свои экраны и команды — документация на будущее', icon: 'M10 4h4v3a2 2 0 1 0 0 4v0h3v4h-3a2 2 0 1 0 0 4v1h-4v-3a2 2 0 1 0-4 0H3v-4h3a2 2 0 1 0 0-4V4z', cls: ' c-ai', k: 'doc', id: 'mods', soon: true }
@@ -327,7 +329,7 @@
     }).join('');
     return '<div class="screen"><h1 class="lt">Ещё</h1>' +
       '<div class="about"><button type="button" class="mlogo-big" style="width: 60px; height: 60px" data-logo data-act="logo" aria-label="Показать анимацию логотипа">' + ICON.logo('play') + '</button>' +
-        '<div style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 20px">Refrain ' + esc(relVer()) + '</b><span class="small" style="font-size: 14px">Windows и Android · без аккаунта и рекламы</span></div></div>' +
+        '<div style="display: flex; flex-direction: column; gap: 2px"><b style="font-size: 20px">Refrain ' + esc(relVer()) + '</b><span class="small" style="font-size: 14px">Windows, Linux и Android · без аккаунта и рекламы</span></div></div>' +
       '<div class="group">' + rows + '</div>' +
       '<div class="gtitle">Вид</div><div class="group">' +
         '<div class="row" style="cursor: default"><span class="rt"><b>Тёмная тема</b></span><button type="button" role="switch" class="switch' + (S.dark ? ' on' : '') + '" aria-checked="' + S.dark + '" aria-label="Тёмная тема" data-act="dark"><span class="knob"></span></button></div>' +
@@ -455,9 +457,13 @@
   function relVer() { return REL ? REL.ver : FALLBACK_VER; }
   function relFile(kind) {
     if (REL && REL[kind] && REL[kind].name) return REL[kind].name;
+    if (kind === 'appimage') return 'Refrain-' + FALLBACK_VER + '-x86_64.AppImage';
+    if (kind === 'deb') return 'Refrain_' + FALLBACK_VER + '_amd64.deb';
     return kind === 'win' ? 'Mnema-Setup-' + relVer() + '.exe' : 'Mnema-' + relVer() + '-Android.apk';
   }
-  function relUrl(kind) { return kind === 'web' ? WEBAPP : (REL && REL[kind] && REL[kind].url) || RELEASES; }
+  function relUrl(kind) { if (kind === 'linux') kind = 'appimage'; return kind === 'web' ? WEBAPP : (REL && REL[kind] && REL[kind].url) || RELEASES; }
+  // у файла Linux, которого ещё нет в последнем выпуске, — пометка «появится в 1.29»
+  function soonChip(kind) { return REL && !REL[kind] ? ' <span class="tchip">появится в 1.29</span>' : ''; }
 
   function layerTitle(it) {
     if (it.k === 'updates') return 'Что нового';
@@ -477,8 +483,8 @@
     }
     if (it.k === 'download') {
       return '<div class="lpage" style="padding-bottom: 0"><h1 class="lt">Скачать</h1><p class="lead" data-dl-lead></p>' +
-        '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(3, 1fr); margin: 0 16px 6px"><span class="seg-thumb" data-plat-thumb style="width: calc((100% - 4px) / 3)"></span>' +
-          '<button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="web" data-act="plat" data-arg="web">Онлайн (тест)</button></div>' +
+        '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(4, 1fr); margin: 0 16px 6px"><span class="seg-thumb" data-plat-thumb style="width: calc((100% - 4px) / 4)"></span>' +
+          '<button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="linux" data-act="plat" data-arg="linux">Linux</button><button type="button" role="tab" data-plat="web" data-act="plat" data-arg="web">Веб (тест)</button></div>' +
         '<div class="dev-stage"><div class="device" data-dev><div class="dscreen" data-dscreen>' +
           '<div class="dside" data-dside><span style="width: 80%"></span><span style="width: 60%"></span><span style="width: 70%"></span></div>' +
           '<div class="dmain"><b class="serif" style="font-size: 16px">Сегодня</b><div class="dbtn">Учиться</div><div class="dbar">История<i><b style="width: 72%"></b></i></div><div class="dbar">Физика<i><b style="width: 48%"></b></i></div><div class="dbar">Биология<i><b style="width: 86%"></b></i></div>' +
@@ -489,7 +495,7 @@
         '<div class="group">' + D.faq.map(function (f, i) {
           return accHtml('acc-q', i === 0, '<span>' + esc(f.q) + '</span>' + ICON.chevD(18, i === 0, 90), '<p class="acc-a">' + esc(f.a) + '</p>', 90, i ? 'sep-top' : '');
         }).join('') + '</div>' +
-        '<div class="dl-cta"><a class="btn primary wide" data-plat-cta href="' + RELEASES + '"></a></div></div>';
+        '<div class="dl-cta"><a class="btn primary wide" data-plat-cta href="' + RELEASES + '"></a><a class="btn ghost wide" data-plat-cta2 href="' + RELEASES + '" style="display: none; margin-top: 8px"></a></div></div>';
     }
     if (it.k === 'docs') {
       return '<div class="lpage"><h1 class="lt">Документация</h1><p class="lead">От первой карточки до своих модов — простыми словами.</p>' +
@@ -639,11 +645,11 @@
   function applyPlat(el, first) {
     el = el || $$('.layer', E.layers).filter(function (l) { return $('[data-dev]', l); }).pop();
     if (!el) return;
-    var win = S.plat === 'win', q = function (s) { return $(s, el); };
+    var win = S.plat === 'win' || S.plat === 'linux', q = function (s) { return $(s, el); };
     var parts = $$('[data-dev],[data-dscreen],[data-dside],[data-dbase],[data-dtabs]', el);
     if (first) parts.forEach(function (p) { p.style.transition = 'none'; });
     q('[data-dl-lead]').textContent = 'Версия ' + relVer() + '. Бесплатно, без аккаунта и рекламы.';
-    q('[data-plat-thumb]').style.transform = 'translateX(' + ({ android: 0, win: 100, web: 200 }[S.plat]) + '%)';
+    q('[data-plat-thumb]').style.transform = 'translateX(' + ({ android: 0, win: 100, linux: 200, web: 300 }[S.plat]) + '%)';
     $$('[data-plat]', el).forEach(function (b) { var on = b.getAttribute('data-plat') === S.plat; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
     var dev = q('[data-dev]');
     dev.style.width = win ? '300px' : '170px'; dev.style.height = win ? '196px' : '300px'; dev.style.borderRadius = win ? '14px' : '32px';
@@ -652,12 +658,16 @@
     var base = q('[data-dbase]'); base.style.width = win ? '116%' : '0%'; base.style.opacity = win ? 1 : 0;
     var tabs = q('[data-dtabs]'); tabs.style.opacity = win ? 0 : 1; tabs.style.transform = win ? 'translateY(30px)' : 'translateY(0px)';
     if (first) { void dev.offsetWidth; parts.forEach(function (p) { p.style.transition = ''; }); }
-    q('[data-plat-title]').textContent = win ? 'Для Windows' : S.plat === 'android' ? 'Для Android' : 'Онлайн-версия — только для тестов';
-    q('[data-plat-steps]').innerHTML = S.plat === 'web' ?
-      '<ol class="steps"><li><span><b>Открой онлайн-версию</b><br><span class="muted">Она нужна только для тестов и знакомства: Chrome, Edge, Safari или Firefox.</span></span></li><li><span><b>Помни про данные</b><br><span class="muted">Они лежат только в этом браузере и могут пропасть. Копию можно сохранить в «Настройки → Данные».</span></span></li><li><span><b>Для постоянной учёбы — приложение</b><br><span class="muted">Поставь Refrain для Windows или Android: там карточки в безопасности.</span></span></li></ol>' : win ?
+    q('[data-plat-title]').innerHTML = S.plat === 'win' ? 'Для Windows' : S.plat === 'linux' ? ICON.linux(22).replace('<svg ', '<svg style="vertical-align: -3px; margin-right: 6px" ') + 'Для Linux' : S.plat === 'android' ? 'Для Android' : 'Онлайн-версия — только для тестов';
+    q('[data-plat-steps]').innerHTML = S.plat === 'linux' ?
+      '<ol class="steps"><li><span><b>AppImage — подходит любому дистрибутиву</b><br><span class="muted mono" style="font-size: 13px; word-break: break-all">' + esc(relFile('appimage')) + '</span></span></li><li><span><b>Сделай исполняемым и запусти</b><br><span class="muted mono" style="font-size: 13px; word-break: break-all">chmod +x Refrain-*.AppImage</span><br><span class="muted">Или разреши запуск в свойствах файла. AppImage обновляется сам.</span></span></li><li><span><b>Или пакет .deb (Debian, Ubuntu, Mint)</b><br><span class="muted mono" style="font-size: 13px; word-break: break-all">sudo apt install ./' + esc(relFile('deb')) + '</span></span></li></ol>' : S.plat === 'web' ?
+      '<ol class="steps"><li><span><b>Открой онлайн-версию</b><br><span class="muted">Она нужна только для тестов и знакомства: Chrome, Edge, Safari или Firefox.</span></span></li><li><span><b>Помни про данные</b><br><span class="muted">Они лежат только в этом браузере и могут пропасть. Копию можно сохранить в «Настройки → Данные».</span></span></li><li><span><b>Для постоянной учёбы — приложение</b><br><span class="muted">Поставь Refrain для Windows, Linux или Android: там карточки в безопасности.</span></span></li></ol>' : win ?
       '<ol class="steps"><li><span><b>Скачай установщик</b><br><span class="muted mono" style="font-size: 13px">' + esc(relFile('win')) + '</span></span></li><li><span><b>Запусти и следуй установщику</b><br><span class="muted">Можно включить автозапуск и значок у часов.</span></span></li><li><span><b>Дальше — само</b><br><span class="muted">Refrain раз в день проверяет выпуски.</span></span></li></ol>' :
       '<ol class="steps"><li><span><b>Скачай APK на телефон</b><br><span class="muted mono" style="font-size: 13px">' + esc(relFile('android')) + '</span></span></li><li><span><b>Открой и разреши установку</b><br><span class="muted">Из этого источника — один раз.</span></span></li><li><span><b>Перенеси карточки с компьютера</b><br><span class="muted">По Wi-Fi: код из 12 знаков или QR.</span></span></li></ol>';
-    var cta = q('[data-plat-cta]'); cta.innerHTML = win ? 'Скачать ' + esc(relFile('win')) : S.plat === 'android' ? 'Скачать APK' : 'Открыть онлайн ' + CHIP; cta.setAttribute('href', relUrl(S.plat));
+    var cta = q('[data-plat-cta]'), cta2 = q('[data-plat-cta2]'), lin = S.plat === 'linux';
+    cta.innerHTML = lin ? 'Скачать AppImage' + soonChip('appimage') : win ? 'Скачать ' + esc(relFile('win')) : S.plat === 'android' ? 'Скачать APK' : 'Открыть онлайн ' + CHIP; cta.setAttribute('href', relUrl(S.plat));
+    cta2.style.display = lin ? '' : 'none';
+    if (lin) { cta2.innerHTML = 'Скачать .deb' + soonChip('deb'); cta2.setAttribute('href', relUrl('deb')); }
   }
 
   // ───── шторка ─────
@@ -975,6 +985,12 @@
   }
 
   // ───── выпуск с GitHub ─────
+  // из нескольких сборок (x86_64 и arm64) берём ту, что для обычного компьютера
+  function pickLinux(old, x) {
+    var arm = function (n) { return /arm64|aarch64|armhf/i.test(n); };
+    return !old || (arm(old.name) && !arm(x.name)) ? { name: x.name, url: x.browser_download_url } : old;
+  }
+
   function loadRelease() {
     if (!window.fetch) return;
     fetch('https://api.github.com/repos/' + REPO + '/releases/latest', { headers: { Accept: 'application/vnd.github+json' } })
@@ -985,6 +1001,8 @@
         (j.assets || []).forEach(function (x) {
           if (/\.exe$/i.test(x.name)) rel.win = { name: x.name, url: x.browser_download_url };
           else if (/\.apk$/i.test(x.name)) rel.android = { name: x.name, url: x.browser_download_url };
+          else if (/\.AppImage$/i.test(x.name)) rel.appimage = pickLinux(rel.appimage, x);
+          else if (/\.deb$/i.test(x.name)) rel.deb = pickLinux(rel.deb, x);
         });
         REL = rel;
         applyPlat(null, false);

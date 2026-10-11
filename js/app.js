@@ -7,7 +7,7 @@
   var DOCS = docsData();
   var REPO = 'TryserPy/Mnema';
   var RELEASES = 'https://github.com/' + REPO + '/releases/latest';
-  var FALLBACK_VER = '1.27.0';
+  var FALLBACK_VER = '1.29.0';
   // Веб-версия приложения лежит рядом с сайтом (папка app/): запускается в браузере и ставится как приложение на ПК, Android, iPhone и iPad.
   var WEBAPP = 'app/';
 
@@ -20,6 +20,8 @@
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   var CHIP = '<span class="tchip">тест</span>'; // метка «тест» у ссылок на онлайн-версию
+  // у файла Linux, которого ещё нет в последнем выпуске, — пометка «появится в 1.29»
+  function soonChip(kind) { return REL && !REL[kind] ? ' <span class="tchip">появится в 1.29</span>' : ''; }
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -34,7 +36,7 @@
     filter: 'all', query: '', sheet: null,
     reps: [1, 3, 7, 16],
     methFlip: {},
-    plat: /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? 'web' : /Android/.test(navigator.userAgent) ? 'android' : 'win',
+    plat: /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? 'web' : /Android/.test(navigator.userAgent) ? 'android' : /Linux|X11/.test(navigator.userAgent) ? 'linux' : 'win',
     docQ: '', docNavOpen: false,
     lab: { sticky: true, pastel: true, big: false, glow: false },
     gen: { id: 'my-mod', name: 'Мой мод', version: '1.0', author: 'Я', desc: 'Что делает мод' }
@@ -51,6 +53,7 @@
 
   // ───── маленькие SVG ─────
   var SVG = {
+    linux: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c-2.2 0-3.5 2-3.5 4.5 0 1.3-.4 2.2-1.2 3.4C6 12.5 5 14.5 5 16.5c0 1.2.6 2 1.8 2.4M12 3c2.2 0 3.5 2 3.5 4.5 0 1.3.4 2.2 1.2 3.4 1.3 1.6 2.3 3.6 2.3 5.6 0 1.2-.6 2-1.8 2.4M6.8 18.9c1-.9 2.2-.6 3.2.6h4c1-1.2 2.2-1.5 3.2-.6"></path><path d="M10.2 7.5v.5M13.8 7.5v.5"></path></svg>',
     chevDown: '<svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>',
     chevDownSm: '<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>',
     chevDownXs: '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>',
@@ -259,7 +262,7 @@
       '<section class="wrap hero" data-hero>' +
         '<div class="hero-grid">' +
           '<div class="hero-copy">' +
-            '<a class="eyebrow" href="#/updates"><b>1.27</b><span>Refrain онлайн — тестовая версия</span><span aria-hidden="true">›</span></a>' +
+            '<a class="eyebrow" href="#/updates"><b>1.29</b><span>Новое: Linux, стили и экспорт в Markdown</span><span aria-hidden="true">›</span></a>' +
             '<h1 class="serif h-display">Запоминай больше.<br><span class="accent-text">Учи меньше.</span></h1>' +
             '<p class="lead">Параграф учебника → конспект → карточки → повторения по расписанию. Refrain встраивает в учёбу то, что по исследованиям действительно работает.</p>' +
             '<div style="display: flex; flex-wrap: wrap; gap: 12px">' +
@@ -267,8 +270,8 @@
               '<a class="btn btn-ghost" data-magnet data-dl="any" href="' + RELEASES + '">' + SVG.download + 'Скачать приложение</a>' +
               '<button type="button" class="btn btn-ghost" data-magnet data-act="demo">Попробовать прямо здесь</button>' +
             '</div>' +
-            '<p class="webnote">Онлайн-версия — только для тестов: данные остаются в этом браузере и могут пропасть. Для постоянной учёбы — Windows или Android.</p>' +
-            '<div class="facts"><span>Windows и Android</span><span>Без аккаунта</span><span>Без рекламы</span><span>Работает офлайн</span></div>' +
+            '<p class="webnote">Онлайн-версия — только для тестов: данные остаются в этом браузере и могут пропасть. Для постоянной учёбы — Windows, Linux или Android.</p>' +
+            '<div class="facts"><span>Windows, Linux и Android</span><span>Без аккаунта</span><span>Без рекламы</span><span>Работает офлайн</span></div>' +
           '</div>' +
           '<div class="deck" data-deck><div class="deck-stage" data-deck-stage>' + hero + '</div></div>' +
         '</div>' +
@@ -369,10 +372,11 @@
         '<div class="cta" data-spot data-reveal>' +
           '<button type="button" class="mlogo-big" data-logo data-act="logo" aria-label="Refrain — показать анимацию логотипа"><span class="mlogo auto" aria-hidden="true"><span class="mlogo-bg"></span><span class="mlogo-ring"></span><svg viewBox="0 0 32 32"><path class="echo e2" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="echo e1" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path><path class="r" pathLength="100" d="M10 24 V8 H17 C21 8 23 10 23 12.5 C23 15 21 17 17 17 H10 M16.5 17.5 L23 24"></path></svg><span class="mlogo-dot"></span></span></button>' +
           '<h2 class="serif h-large" style="max-width: 860px">Учёба, которая остаётся в голове.</h2>' +
-          '<p style="font-size: 19px; opacity: .78; max-width: 520px">Бесплатно для Windows и Android. Карточки и настройки при обновлении сохраняются. Онлайн-версия в браузере — только для тестов.</p>' +
+          '<p style="font-size: 19px; opacity: .78; max-width: 520px">Бесплатно для Windows, Linux и Android. Карточки и настройки при обновлении сохраняются. Онлайн-версия в браузере — только для тестов.</p>' +
           '<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">' +
             '<a class="btn btn-primary" data-magnet href="' + WEBAPP + '">Открыть онлайн <span class="tchip">тест</span></a>' +
             '<a class="btn btn-ghost" data-magnet data-dl="win" href="' + RELEASES + '">Скачать для Windows</a>' +
+            '<a class="btn btn-ghost" data-magnet data-dl="linux" href="' + RELEASES + '">' + SVG.linux + 'Скачать для Linux</a>' +
             '<a class="btn btn-ghost" data-magnet data-dl="android" href="' + RELEASES + '">Скачать для Android</a>' +
           '</div>' +
         '</div>' +
@@ -682,11 +686,14 @@
   function relVer() { return REL ? REL.ver : FALLBACK_VER; }
   function relFile(kind) {
     if (REL && REL[kind] && REL[kind].name) return REL[kind].name;
+    if (kind === 'appimage') return 'Refrain-' + FALLBACK_VER + '-x86_64.AppImage';
+    if (kind === 'deb') return 'Refrain_' + FALLBACK_VER + '_amd64.deb';
     return kind === 'win' ? 'Mnema-Setup-' + relVer() + '.exe' : 'Mnema-' + relVer() + '-Android.apk';
   }
   function relUrl(kind) {
     if (kind === 'any') return RELEASES;
     if (kind === 'web') return WEBAPP;
+    if (kind === 'linux') kind = 'appimage';
     return (REL && REL[kind] && REL[kind].url) || RELEASES;
   }
 
@@ -694,8 +701,8 @@
     return '<main class="page wrap" id="main" tabindex="-1">' +
       '<div class="ptitle" style="align-items: center; text-align: center"><div class="kicker" data-dl-kicker></div>' +
       '<h1 class="serif h-large">Refrain на твоём устройстве.</h1><p class="lead">Бесплатно. Без аккаунта и рекламы. Учится и работает без интернета.</p>' +
-      '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(3, 150px); margin-top: 8px"><span class="seg-thumb" data-plat-thumb style="width: 150px"></span>' +
-        '<button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="web" data-act="plat" data-arg="web">Онлайн (тест)</button></div></div>' +
+      '<div class="seg" role="tablist" aria-label="Платформа" style="grid-template-columns: repeat(4, 150px); margin-top: 8px"><span class="seg-thumb" data-plat-thumb style="width: 150px"></span>' +
+        '<button type="button" role="tab" data-plat="win" data-act="plat" data-arg="win">Windows</button><button type="button" role="tab" data-plat="linux" data-act="plat" data-arg="linux">Linux</button><button type="button" role="tab" data-plat="android" data-act="plat" data-arg="android">Android</button><button type="button" role="tab" data-plat="web" data-act="plat" data-arg="web">Онлайн (тест)</button></div></div>' +
       '<div class="dl-grid" style="margin-top: 56px">' +
         '<div class="dev-stage" data-dev-stage><div class="device" data-dev><div class="screen" data-screen>' +
           '<div class="app-side" data-side><b style="font-size: 13px; display: flex; gap: 6px; align-items: center"><span class="logo" style="width: 20px; height: 20px; border-radius: 6px; font-size: 12px">R</span>Refrain</b>' +
@@ -707,7 +714,7 @@
         '</div><div class="base" data-base></div></div></div>' +
         '<div style="display: flex; flex-direction: column; gap: 28px"><h2 style="font-size: 30px; font-weight: 600; letter-spacing: -0.02em" data-plat-title></h2>' +
           '<div data-plat-steps></div>' +
-          '<div style="display: flex; gap: 12px; flex-wrap: wrap"><a class="btn btn-primary" data-magnet data-plat-cta href="' + RELEASES + '"></a><a class="btn btn-ghost" href="https://github.com/' + REPO + '">Исходный код</a></div></div>' +
+          '<div style="display: flex; gap: 12px; flex-wrap: wrap"><a class="btn btn-primary" data-magnet data-plat-cta href="' + RELEASES + '"></a><a class="btn btn-ghost" data-plat-cta2 href="' + RELEASES + '" style="display: none"></a><a class="btn btn-ghost" href="https://github.com/' + REPO + '">Исходный код</a></div></div>' +
       '</div>' +
       '<section class="sec-gap" style="margin-top: 120px; max-width: 760px; margin-left: auto; margin-right: auto"><h2 class="serif h-sec" style="margin-bottom: 24px" data-reveal>Частые вопросы</h2>' +
         '<div class="ios-group" style="background: var(--surface); border: 1px solid var(--line)">' + D.faq.map(function (f, i) {
@@ -726,7 +733,7 @@
     fitDevice();
     q('[data-dl-kicker]').textContent = 'Скачать · версия ' + relVer();
     if (first) $$('[data-dev-stage],[data-dev],[data-screen],[data-side],[data-base],[data-tabs]', app).forEach(function (el) { el.style.transition = 'none'; });
-    q('[data-plat-thumb]').style.transform = 'translateX(' + ({ win: 0, android: 150, web: 300 }[plat]) + 'px)';
+    q('[data-plat-thumb]').style.transform = 'translateX(' + ({ win: 0, linux: 150, android: 300, web: 450 }[plat]) + 'px)';
     $$('[data-plat]', app).forEach(function (b) {
       var on = b.getAttribute('data-plat') === S.plat;
       b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -737,20 +744,27 @@
     var base = q('[data-base]'); base.style.width = wide ? '118%' : '0%'; base.style.opacity = wide ? 1 : 0;
     var tabs = q('[data-tabs]'); tabs.style.opacity = wide ? 0 : 1; tabs.style.transform = wide ? 'translateY(30px)' : 'translateY(0px)';
     if (first) { void dev.offsetWidth; $$('[data-dev-stage],[data-dev],[data-screen],[data-side],[data-base],[data-tabs]', app).forEach(function (el) { el.style.transition = ''; }); }
-    q('[data-plat-title]').textContent = win ? 'Для Windows' : plat === 'android' ? 'Для Android' : 'Онлайн-версия — только для тестов';
+    q('[data-plat-title]').innerHTML = win ? 'Для Windows' : plat === 'linux' ? SVG.linux.replace('width="18" height="18"', 'width="28" height="28" style="vertical-align: -4px; margin-right: 8px"') + 'Для Linux' : plat === 'android' ? 'Для Android' : 'Онлайн-версия — только для тестов';
     q('[data-plat-steps]').innerHTML = win ?
       '<ol class="steps"><li><span><b>Скачай установщик</b><br><span class="muted mono" style="font-size: 14px">' + esc(relFile('win')) + '</span></span></li>' +
       '<li><span><b>Запусти и следуй установщику</b><br><span class="muted">Можно включить автозапуск и значок у часов.</span></span></li>' +
       '<li><span><b>Дальше — само</b><br><span class="muted">Refrain раз в день проверяет выпуски и предлагает обновиться.</span></span></li></ol>' :
+      plat === 'linux' ?
+      '<ol class="steps"><li><span><b>AppImage — подходит любому дистрибутиву</b><br><span class="muted mono" style="font-size: 14px; word-break: break-all">' + esc(relFile('appimage')) + '</span></span></li>' +
+      '<li><span><b>Сделай исполняемым и запусти</b><br><span class="muted mono" style="font-size: 14px; word-break: break-all">chmod +x Refrain-*.AppImage</span><br><span class="muted">Или разреши запуск в свойствах файла. AppImage обновляется сам.</span></span></li>' +
+      '<li><span><b>Или пакет .deb (Debian, Ubuntu, Mint)</b><br><span class="muted mono" style="font-size: 14px; word-break: break-all">sudo apt install ./' + esc(relFile('deb')) + '</span></span></li></ol>' :
       plat === 'android' ?
       '<ol class="steps"><li><span><b>Скачай APK на телефон</b><br><span class="muted mono" style="font-size: 14px">' + esc(relFile('android')) + '</span></span></li>' +
       '<li><span><b>Открой и разреши установку</b><br><span class="muted">Из этого источника — один раз.</span></span></li>' +
       '<li><span><b>Перенеси карточки с компьютера</b><br><span class="muted">По Wi-Fi: код из 12 знаков или QR — и готово.</span></span></li></ol>' :
       '<ol class="steps"><li><span><b>Открой онлайн-версию</b><br><span class="muted">Она нужна только для тестов и знакомства: Chrome, Edge, Safari или Firefox.</span></span></li>' +
       '<li><span><b>Помни про данные</b><br><span class="muted">Они лежат только в этом браузере и могут пропасть. Копию можно сохранить в «Настройки → Данные».</span></span></li>' +
-      '<li><span><b>Для постоянной учёбы — приложение</b><br><span class="muted">Поставь Refrain для Windows или Android: там карточки в безопасности.</span></span></li></ol>';
-    var cta = q('[data-plat-cta]'); cta.innerHTML = win ? 'Скачать ' + esc(relFile('win')) : plat === 'android' ? 'Скачать APK' : 'Открыть онлайн ' + CHIP;
-    cta.setAttribute('href', relUrl(plat));
+      '<li><span><b>Для постоянной учёбы — приложение</b><br><span class="muted">Поставь Refrain для Windows, Linux или Android: там карточки в безопасности.</span></span></li></ol>';
+    var cta = q('[data-plat-cta]'), cta2 = q('[data-plat-cta2]');
+    cta.innerHTML = win ? 'Скачать ' + esc(relFile('win')) : plat === 'linux' ? 'Скачать AppImage' + soonChip('appimage') : plat === 'android' ? 'Скачать APK' : 'Открыть онлайн ' + CHIP;
+    cta.setAttribute('href', plat === 'linux' ? relUrl('appimage') : relUrl(plat));
+    cta2.style.display = plat === 'linux' ? '' : 'none';
+    if (plat === 'linux') { cta2.innerHTML = 'Скачать .deb' + soonChip('deb'); cta2.setAttribute('href', relUrl('deb')); }
   }
 
   // макет устройства уменьшается, чтобы помещаться в узкий экран
@@ -770,6 +784,12 @@
     if ($('[data-plat-cta]', app)) applyPlat(false);
   }
 
+  // из нескольких сборок (x86_64 и arm64) берём ту, что для обычного компьютера
+  function pickLinux(old, a) {
+    var arm = function (n) { return /arm64|aarch64|armhf/i.test(n); };
+    return !old || (arm(old.name) && !arm(a.name)) ? { name: a.name, url: a.browser_download_url } : old;
+  }
+
   function loadRelease() {
     if (!window.fetch) return;
     fetch('https://api.github.com/repos/' + REPO + '/releases/latest', { headers: { Accept: 'application/vnd.github+json' } })
@@ -780,6 +800,8 @@
         (j.assets || []).forEach(function (a) {
           if (/\.exe$/i.test(a.name)) rel.win = { name: a.name, url: a.browser_download_url };
           else if (/\.apk$/i.test(a.name)) rel.android = { name: a.name, url: a.browser_download_url };
+          else if (/\.AppImage$/i.test(a.name)) rel.appimage = pickLinux(rel.appimage, a);
+          else if (/\.deb$/i.test(a.name)) rel.deb = pickLinux(rel.deb, a);
         });
         REL = rel;
         applyRelease();
@@ -838,7 +860,7 @@
   }
   function labJson() {
     var on = labDefs.filter(function (d) { return S.lab[d[0]]; });
-    return JSON.stringify({ kind: 'mnema-mod', name: on.length ? on.map(function (x) { return x[1]; }).join(' + ') : 'Мой стиль', description: 'Собрано в документации Refrain', author: 'Я', where: 'при повторении', css: labCss() || '/* включи хотя бы один стиль */' }, null, 2);
+    return JSON.stringify({ kind: 'refrain-style', formatVersion: 1, name: on.length ? on.map(function (x) { return x[1]; }).join(' + ') : 'Мой стиль', description: 'Собрано в документации Refrain', author: 'Я', version: '1.0', icon: '🎨', css: labCss() || '/* включи хотя бы один стиль */' }, null, 2);
   }
   function genCode() {
     var gn = S.gen;
@@ -884,7 +906,7 @@
       return '<div class="lab"><div class="lab-box">' + rows + '</div><div class="pv ' + labCls() + '" data-pv aria-label="Как будет выглядеть повторение">' +
         '<div class="pv-card"><span class="small">История · 3 / 12</span><div class="pv-q">Год Куликовской битвы</div><div class="pv-div"></div><div class="pv-a">1380</div></div>' +
         '<div class="pv-grades"><span class="pv-g again">Снова</span><span class="pv-g hard">Трудно</span><span class="pv-g good">Хорошо</span><span class="pv-g easy">Легко</span></div></div></div>' +
-        codeBlock('lab', 'Файл стиля · .mnemamod', labJson());
+        codeBlock('lab', 'Файл стиля · .refrainstyle', labJson());
     }
     if (b.gen) {
       var g = S.gen;
