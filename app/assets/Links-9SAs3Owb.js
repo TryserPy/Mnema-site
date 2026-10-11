@@ -1,0 +1,1 @@
+import{i as e}from"./App-BkpB7MQF.js";export{e as linkRoute};
