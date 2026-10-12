@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://api.github.com; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Статистика Refrain</title>
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0F14" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="stats.css">
+</head>
+<body>
+<noscript><p class="noscript">Для страницы нужен JavaScript.</p></noscript>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="../" aria-label="Refrain — на сайт"><img src="../favicon.svg" alt="" width="32" height="32"><span>Refrain</span></a>
+    <span class="top-tag">Статистика · только для владельца</span>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+
+  <!-- вход -->
+  <section class="card" id="login" hidden>
+    <h1 class="serif">Статистика Refrain</h1>
+    <p class="muted">Страница скрытая и без ссылок с сайта. Данные трафика GitHub отдаёт только тем, у кого есть доступ с правом записи к репозиторию, поэтому без токена владельца здесь ничего не видно. Токен уходит только на <span class="mono">api.github.com</span> и нигде не сохраняется: он живёт в памяти страницы, после перезагрузки его нужно ввести снова.</p>
+
+    <form id="login-form" autocomplete="off" novalidate>
+      <label class="field">
+        <span class="lbl">GitHub-токен (только чтение)</span>
+        <input id="f-token" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="255" placeholder="github_pat_…" required>
+      </label>
+      <details class="more" id="repos-box-login">
+        <summary>Владелец и репозитории</summary>
+        <div class="grid3">
+          <label class="field"><span class="lbl">Владелец</span><input class="f-owner" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="100" value="TryserPy"></label>
+          <label class="field"><span class="lbl">Приложение</span><input class="f-app" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="100" value="Mnema"></label>
+          <label class="field"><span class="lbl">Сайт</span><input class="f-site" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="100" value="Mnema-site"></label>
+        </div>
+      </details>
+
+      <p class="msg err" id="login-msg" role="alert" hidden></p>
+      <div class="row">
+        <button class="btn btn-primary" type="submit">Показать статистику</button>
+      </div>
+    </form>
+
+    <details class="more help">
+      <summary>Как создать токен</summary>
+      <ol class="steps">
+        <li>Открой GitHub → <b>Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</b>.</li>
+        <li><b>Resource owner</b> — <span class="mono">TryserPy</span>. Срок действия поставь небольшой (например, 30 дней).</li>
+        <li><b>Repository access</b> — <i>Only select repositories</i>: только <span class="mono">TryserPy/Mnema</span> и <span class="mono">TryserPy/Mnema-site</span>.</li>
+        <li><b>Repository permissions</b> — всё только на чтение:
+          <ul>
+            <li><b>Administration: Read-only</b> — именно это право GitHub требует для данных трафика (просмотры, клоны, источники, страницы);</li>
+            <li><b>Contents: Read-only</b> — выпуски и файлы;</li>
+            <li><b>Metadata: Read-only</b> — звёзды, форки, наблюдатели (ставится само).</li>
+          </ul>
+        </li>
+        <li>Нажми <b>Generate token</b>, скопируй токен (он показывается один раз) и вставь сюда. Токен без записи ничего не может изменить. Менеджер паролей лучше не использовать: страница ничего не запоминает.</li>
+      </ol>
+      <p class="small muted">Подойдёт и классический токен со scope <span class="mono">public_repo</span>, но он шире нужного — лучше fine-grained. Скачивания выпусков публичные и видны любому, а вот трафик — только владельцу.</p>
+    </details>
+  </section>
+
+  <!-- панель после входа -->
+  <section id="app" hidden>
+    <div class="bar">
+      <div class="bar-l">
+        <h1 class="serif">Статистика</h1>
+        <p class="small muted" id="meta-line" aria-live="polite"></p>
+      </div>
+      <div class="bar-r">
+        <button class="btn btn-ghost btn-sm" type="button" id="b-refresh">Обновить</button>
+        <button class="btn btn-ghost btn-sm" type="button" id="b-logout">Выйти</button>
+      </div>
+    </div>
+    <p class="msg err" id="app-msg" role="alert" hidden></p>
+
+    <div id="out"></div>
+
+    <details class="more cfg">
+      <summary>Владелец и репозитории</summary>
+      <div class="grid3">
+        <label class="field"><span class="lbl">Владелец</span><input class="f-owner" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="100"></label>
+        <label class="field"><span class="lbl">Приложение</span><input class="f-app" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="100"></label>
+        <label class="field"><span class="lbl">Сайт</span><input class="f-site" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="100"></label>
+      </div>
+      <div class="row"><button class="btn btn-ghost btn-sm" type="button" id="b-apply">Применить и обновить</button></div>
+      <p class="msg err" id="cfg-msg" role="alert" hidden></p>
+    </details>
+  </section>
+
+</main>
+
+<footer class="foot wrap">
+  <p class="small muted">Токен и ответы GitHub хранятся только в памяти страницы (ответы — несколько минут, чтобы не тратить лимит). Кнопка «Выйти» их стирает; перезагрузка тоже.</p>
+</footer>
+
+<script src="stats.js"></script>
+</body>
+</html>
