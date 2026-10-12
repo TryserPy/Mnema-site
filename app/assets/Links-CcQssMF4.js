@@ -1,0 +1,1 @@
+import{i as e}from"./App-DhqaTWea.js";export{e as linkRoute};
