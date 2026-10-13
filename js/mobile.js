@@ -338,6 +338,7 @@
       '<div class="gtitle">Проект</div><div class="group">' +
         '<a class="row" style="text-decoration: none; color: inherit" href="https://github.com/' + REPO + '"><span class="rt"><b>GitHub</b><span class="small">Исходный код</span></span>' + ICON.chevR + '</a>' +
         '<a class="row sep" style="text-decoration: none; color: inherit" href="https://github.com/' + REPO + '/releases"><span class="rt"><b>Выпуски</b><span class="small">Все версии и установщики</span></span>' + ICON.chevR + '</a>' +
+        '<a class="row sep" style="text-decoration: none; color: inherit" href="privacy/"><span class="rt"><b>Данные и Refrain ИИ</b><span class="small">Что хранится и как удалить аккаунт</span></span>' + ICON.chevR + '</a>' +
       '</div><p class="foot">Вспоминать, а не перечитывать. Данные принадлежат ученику. Простые слова.</p></div>';
   }
 
