@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://telegram.org/js/telegram-web-app.js; style-src 'self'; img-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Refrain · панель</title>
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../admin/panel.css">
+<link rel="stylesheet" href="tg.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body class="tg">
+<noscript><p class="noscript">Для панели нужен JavaScript.</p></noscript>
+<main class="wrap" id="root">
+  <section class="card" id="boot">
+    <h1 class="serif">Refrain · панель</h1>
+    <p class="muted" id="boot-msg" role="status">Вход через Telegram…</p>
+  </section>
+</main>
+<script src="../admin/panel.js"></script>
+<script src="tg.js"></script>
+</body>
+</html>
