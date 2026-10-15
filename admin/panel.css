@@ -165,6 +165,24 @@ dialog.dlg p{font-size:14px;color:var(--ink2);overflow-wrap:anywhere}
 /* экран тревоги в мини-приложении */
 .alert-act{border:1px solid var(--accent);background:var(--accent-soft);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
 
+/* мелочи экранов */
+.stack{display:flex;flex-direction:column;gap:8px}
+.seg.seg2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:360px}
+.seg.seg3{grid-template-columns:repeat(3,minmax(0,1fr));max-width:420px}
+.code-big{font-size:20px;letter-spacing:.06em;overflow-wrap:anywhere}
+.warn-text{color:var(--warm-text);font-weight:700}
+.skel{height:14px;border-radius:8px;background:var(--bg2)}
+.skel.short{width:60%}
+td.params{min-width:220px}
+.param{display:inline-flex;align-items:center;gap:6px;margin:2px 10px 2px 0;font-size:12px;color:var(--ink3);white-space:nowrap}
+.param input[type="number"]{width:84px}
+details.jd > summary{cursor:pointer;font-size:12px;color:var(--accent-text);margin-top:4px}
+details.jd pre.raw{margin-top:6px;min-width:220px}
+.view-in{display:flex;flex-direction:column;gap:16px}
+.view-in > .panel + .panel{margin-top:0}
+.bar-l{display:flex;flex-direction:column;gap:4px;min-width:0}
+td .tag{white-space:nowrap}
+
 @media (max-width:760px){
   .wrap{padding:0 16px}
   .top-tag{display:none}
