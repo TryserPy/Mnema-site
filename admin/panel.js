@@ -87,7 +87,7 @@
   function plural(n, f) { var a = Math.abs(n) % 100, b = a % 10; return a > 10 && a < 20 ? f[2] : b > 1 && b < 5 ? f[1] : b === 1 ? f[0] : f[2]; }
   function num(v) { return typeof v === 'number' && isFinite(v) ? v : 0; }
   function fmtN(n, d) { return num(n).toLocaleString('ru-RU', { maximumFractionDigits: d == null ? 0 : d }); }
-  function fmtUsd(n) { return '$' + num(n).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function fmtRub(n) { return num(n).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₽'; }
   function fmtPct(share) { return fmtN(num(share) * 100, 1) + ' %'; }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function parseTime(iso) { var t = Date.parse(iso); return isFinite(t) ? new Date(t) : null; }
@@ -574,7 +574,7 @@
     if (!ov.paused || !ov.paused.reason) return null;
     var m = el('div', 'msg warn stack');
     add(m, el('p', null, 'Refrain ИИ на паузе: ' + (PAUSE[ov.paused.reason] || ov.paused.reason) + (ov.paused.since ? ', с ' + fmtDT(ov.paused.since) : '') + '. Сейчас режим «' + (MODE[ov.mode] || ov.mode) + '».'));
-    if (ov.paused.reason === 'guard') add(m, el('p', 'small', 'Если это подозрение на утечку ключа — сначала замени ключ OpenAI и нажми «Ключ заменён».'));
+    if (ov.paused.reason === 'guard') add(m, el('p', 'small', 'Если это подозрение на утечку ключа — сначала замени ключ ИИ и нажми «Ключ заменён».'));
     add(m, add(el('div', 'row'), resumeBtn(ctx, ov), ctx.has('key') && ov.paused.reason === 'guard' ? btn('Ключ заменён…', 'btn-ghost btn-sm', function () { ctx.go('key'); }) : null));
     return m;
   }
@@ -593,10 +593,10 @@
         add(p, modeRow);
         var k = el('div', 'kpis');
         add(k,
-          kpi(fmtUsd(month.spentUsd), 'из ' + fmtUsd(month.budgetUsd) + ' за месяц', fmtN(month.pages) + ' ' + plural(num(month.pages), ['страница', 'страницы', 'страниц']), meter(num(month.spentUsd), num(month.budgetUsd))),
-          kpi(fmtUsd(today.spentUsd), 'из ' + fmtUsd(today.budgetUsd) + ' сегодня', null, meter(num(today.spentUsd), num(today.budgetUsd))),
+          kpi(fmtRub(month.spentRub), 'из ' + fmtRub(month.budgetRub) + ' за месяц', fmtN(month.pages) + ' ' + plural(num(month.pages), ['страница', 'страницы', 'страниц']), meter(num(month.spentRub), num(month.budgetRub))),
+          kpi(fmtRub(today.spentRub), 'из ' + fmtRub(today.budgetRub) + ' сегодня', null, meter(num(today.spentRub), num(today.budgetRub))),
           kpi(fmtN(today.students), plural(num(today.students), ['ученик сегодня', 'ученика сегодня', 'учеников сегодня']), 'запросов ' + fmtN(today.requests) + ' · ошибок ' + fmtN(today.errors)),
-          kpi(fmtUsd(ov.lastHourUsd), 'за последний час'),
+          kpi(fmtRub(ov.lastHourRub), 'за последний час'),
           kpi(fmtN(ov.unreadAlerts), 'непрочитанных тревог', null, null, ctx.has('alerts') ? function () { ctx.go('alerts'); } : null),
           kpi(fmtN(ov.activeBlocks), 'активных блокировок', null, null, ctx.has('blocks') ? function () { ctx.go('blocks'); } : null),
           kpi(fmtN(ov.newBugs), plural(num(ov.newBugs), ['новый баг', 'новых бага', 'новых багов']), null, null, ctx.has('bugs') ? function () { ctx.go('bugs'); } : null)
@@ -857,22 +857,22 @@
     render: function (out, ctx) {
       return request('/v1/admin/budget').then(function (r) {
         var b = r.budget || {};
-        var p = panel('Бюджет', 'Сколько можно потратить на OpenAI и когда поднимать тревогу. Увеличение бюджета больше чем вдвое — с PIN.');
+        var p = panel('Бюджет', 'Сколько можно потратить на ИИ (баланс Polza.ai) и когда поднимать тревогу. Увеличение бюджета больше чем вдвое — с PIN.');
         function n(v, a) { return inp('number', Object.assign({ value: v == null ? '' : v, inputmode: 'decimal' }, a || {})); }
-        var month = n(b.monthUsd, { min: 0, max: 10000, step: 0.5 });
-        var day = n(b.dayUsd, { min: 0, max: 1000, step: 0.1, placeholder: 'авто' });
+        var month = n(b.monthRub, { min: 0, max: 10000, step: 0.5 });
+        var day = n(b.dayRub, { min: 0, max: 1000, step: 0.1, placeholder: 'авто' });
         var alertAt = inp('text', { value: arr(b.alertAt).map(function (x) { return Math.round(x * 1000) / 10; }).join(', '), maxlength: 40, inputmode: 'decimal' });
         var spikeF = n(b.spikeFactor, { min: 1.5, max: 100, step: 0.5 });
-        var spikeMin = n(b.spikeMinUsd, { min: 0, max: 100, step: 0.05 });
+        var spikeMin = n(b.spikeMinRub, { min: 0, max: 100, step: 0.05 });
         var greedy = n(Math.round(num(b.greedyShare) * 1000) / 10, { min: 0.1, max: 100, step: 0.1 });
         var waveH = n(b.signupWaveHour, { min: 1, max: 100000, step: 1 });
         var waveIp = n(b.signupWavePerIp, { min: 1, max: 1000, step: 1 });
         var upstream = n(Math.round(num(b.upstreamErrorShare) * 1000) / 10, { min: 1, max: 100, step: 1 });
         add(p,
-          add(el('div', 'grid2'), field('В месяц, $', month), field('В сутки, $', day, 'Пусто — двойная средняя доля месяца.')),
+          add(el('div', 'grid2'), field('В месяц, ₽', month), field('В сутки, ₽', day, 'Пусто — двойная средняя доля месяца.')),
           field('Тревоги при расходе, % месяца', alertAt, 'Через запятую. На 100 % — пауза для всех, кроме тебя.'),
           el('h3', null, 'Скачок расхода'),
-          add(el('div', 'grid2'), field('Час дороже среднего, раз', spikeF), field('И не меньше, $ за час', spikeMin)),
+          add(el('div', 'grid2'), field('Час дороже среднего, раз', spikeF), field('И не меньше, ₽ за час', spikeMin)),
           el('h3', null, 'Тревоги'),
           add(el('div', 'grid2'), field('Жадный ученик, % дневного бюджета', greedy), field('Сбои OpenAI, % ошибок за 10 минут', upstream)),
           add(el('div', 'grid2'), field('Волна: новых аккаунтов за час', waveH), field('Волна: новых с одного IP', waveIp))
@@ -880,16 +880,16 @@
         var save = btn('Сохранить бюджет', 'btn-primary', function () {
           var shares = alertAt.value.split(/[;,\s]+/).filter(Boolean).map(function (x) { return Number(x.replace(',', '.')) / 100; });
           var next = {
-            monthUsd: Number(month.value), dayUsd: day.value === '' ? null : Number(day.value), alertAt: shares,
-            spikeFactor: Number(spikeF.value), spikeMinUsd: Number(spikeMin.value), greedyShare: Number(greedy.value) / 100,
+            monthRub: Number(month.value), dayRub: day.value === '' ? null : Number(day.value), alertAt: shares,
+            spikeFactor: Number(spikeF.value), spikeMinRub: Number(spikeMin.value), greedyShare: Number(greedy.value) / 100,
             signupWaveHour: Number(waveH.value), signupWavePerIp: Number(waveIp.value), upstreamErrorShare: Number(upstream.value) / 100
           };
-          var bad = Object.keys(next).some(function (k) { return k !== 'dayUsd' && k !== 'alertAt' && !(isFinite(next[k]) && next[k] >= 0); }) || (next.dayUsd !== null && !(isFinite(next.dayUsd) && next.dayUsd >= 0)) || !shares.length || shares.some(function (x) { return !(x > 0 && x <= 1); });
+          var bad = Object.keys(next).some(function (k) { return k !== 'dayRub' && k !== 'alertAt' && !(isFinite(next[k]) && next[k] >= 0); }) || (next.dayRub !== null && !(isFinite(next.dayRub) && next.dayRub >= 0)) || !shares.length || shares.some(function (x) { return !(x > 0 && x <= 1); });
           if (bad) { ctx.flash('Проверь числа: доли — от 1 до 100 %, суммы — не меньше нуля.', 'err'); return; }
           // Та же проверка, что на сервере: без нужды PIN не спрашиваем (каждая ошибка PIN считается).
-          var needPin = next.monthUsd > num(b.monthUsd) * 2 || (next.dayUsd || 0) > (b.dayUsd == null ? Infinity : b.dayUsd * 2);
+          var needPin = next.monthRub > num(b.monthRub) * 2 || (next.dayRub || 0) > (b.dayRub == null ? Infinity : b.dayRub * 2);
           var put = function (pin) { return request('/v1/admin/budget', { method: 'PUT', body: next, pin: pin }); };
-          ctx.act(save, function () { return needPin ? pinned('Бюджет больше чем вдвое: ' + fmtUsd(next.monthUsd) + ' в месяц.', put) : put(); }, 'Бюджет сохранён.').then(function (x) { if (x) ctx.rerender(); });
+          ctx.act(save, function () { return needPin ? pinned('Бюджет больше чем вдвое: ' + fmtRub(next.monthRub) + ' в месяц.', put) : put(); }, 'Бюджет сохранён.').then(function (x) { if (x) ctx.rerender(); });
         });
         add(p, add(el('div', 'row'), save));
         out.appendChild(p);
@@ -1046,7 +1046,7 @@
           el('h3', null, 'Сверка с OpenAI (утечка ключа)'),
           add(el('label', 'check'), leakOn, el('span', null, 'Сверять расход у OpenAI с нашим учётом')),
           add(el('div', 'grid3'), nf('Каждые, мин', g.leak, 'everyMin', { min: 5, max: 60 }), nf('Окно, мин', g.leak, 'windowMin', { min: 10 }), nf('Задержка данных, мин', g.leak, 'lagMin')),
-          add(el('div', 'grid3'), nf('Больше нашего на, %', g.leak, 'overShare', { pct: true, min: 1 }), nf('И больше на, $', g.leak, 'overUsd', { step: 0.05 }), nf('При нуле запросов больше, $', g.leak, 'idleUsd', { step: 0.05 }))
+          add(el('div', 'grid3'), nf('Больше нашего на, %', g.leak, 'overShare', { pct: true, min: 1 }), nf('И больше на, $', g.leak, 'overRub', { step: 0.05 }), nf('При нуле запросов больше, $', g.leak, 'idleRub', { step: 0.05 }))
         );
 
         add(p, el('h3', null, 'Правила'));
@@ -1127,7 +1127,7 @@
       var self = this;
       return request('/v1/admin/stats', { query: { days: self.days } }).then(function (r) {
         var list = arr(r.stats);
-        var p = panel('Расход', 'По дням (московское время) и по задачам. Страница — условная единица: 650 микродолларов.');
+        var p = panel('Расход', 'По дням (московское время) и по задачам. Страница — условная единица: около 0,04 ₽ (38 554 микрорубля).');
         var seg = el('div', 'seg seg3');
         [7, 30, 90].forEach(function (d) {
           var b = el('button', null, d + ' ' + plural(d, ['день', 'дня', 'дней']));
@@ -1137,26 +1137,26 @@
           seg.appendChild(b);
         });
         add(p, seg);
-        var tot = { usd: 0, pages: 0, requests: 0 }, tasks = {};
+        var tot = { rub: 0, pages: 0, requests: 0 }, tasks = {};
         list.forEach(function (d) {
-          tot.usd += num(d.usd); tot.pages += num(d.pages); tot.requests += num(d.requests);
+          tot.rub += num(d.rub); tot.pages += num(d.pages); tot.requests += num(d.requests);
           var bt = d.byTask && typeof d.byTask === 'object' ? d.byTask : {};
-          Object.keys(bt).forEach(function (k) { var x = tasks[k] || (tasks[k] = { usd: 0, requests: 0 }); x.usd += num(bt[k] && bt[k].usd); x.requests += num(bt[k] && bt[k].requests); });
+          Object.keys(bt).forEach(function (k) { var x = tasks[k] || (tasks[k] = { rub: 0, requests: 0 }); x.rub += num(bt[k] && bt[k].rub); x.requests += num(bt[k] && bt[k].requests); });
         });
-        add(p, add(el('div', 'kpis'), kpi(fmtUsd(tot.usd), 'за ' + self.days + ' ' + plural(self.days, ['день', 'дня', 'дней'])), kpi(fmtN(tot.pages), 'страниц'), kpi(fmtN(tot.requests), 'запросов'), kpi(fmtUsd(list.length ? tot.usd / list.length : 0), 'в среднем за день с расходом')));
+        add(p, add(el('div', 'kpis'), kpi(fmtRub(tot.rub), 'за ' + self.days + ' ' + plural(self.days, ['день', 'дня', 'дней'])), kpi(fmtN(tot.pages), 'страниц'), kpi(fmtN(tot.requests), 'запросов'), kpi(fmtRub(list.length ? tot.rub / list.length : 0), 'в среднем за день с расходом')));
         if (!list.length) { add(p, el('p', 'empty', 'За этот срок расхода не было.')); out.appendChild(p); return; }
-        var max = Math.max.apply(null, list.map(function (d) { return num(d.usd); }).concat([0.000001]));
+        var max = Math.max.apply(null, list.map(function (d) { return num(d.rub); }).concat([0.000001]));
         add(p, el('h3', null, 'По дням'));
-        var t = table(['День', '$', 'Страниц', 'Запросов', ''], [1, 2, 3]);
+        var t = table(['День', '₽', 'Страниц', 'Запросов', ''], [1, 2, 3]);
         list.slice().reverse().forEach(function (d) {
           var bar = el('div', 'hbar');
-          bar.style.width = Math.max(1, num(d.usd) / max * 100).toFixed(1) + '%';
-          add(t.body, add(el('tr'), td(str(d.day, 10), 'mono'), td(fmtUsd(d.usd), 'num'), td(fmtN(d.pages), 'num'), td(fmtN(d.requests), 'num'), add(el('td', 'bar-cell'), bar)));
+          bar.style.width = Math.max(1, num(d.rub) / max * 100).toFixed(1) + '%';
+          add(t.body, add(el('tr'), td(str(d.day, 10), 'mono'), td(fmtRub(d.rub), 'num'), td(fmtN(d.pages), 'num'), td(fmtN(d.requests), 'num'), add(el('td', 'bar-cell'), bar)));
         });
         add(p, t.wrap, el('h3', null, 'По задачам'));
-        var t2 = table(['Задача', '$', 'Запросов', 'Доля'], [1, 2, 3]);
-        Object.keys(tasks).sort(function (a, b) { return tasks[b].usd - tasks[a].usd; }).forEach(function (k) {
-          add(t2.body, add(el('tr'), td(str(k, 60), 'mono'), td(fmtUsd(tasks[k].usd), 'num'), td(fmtN(tasks[k].requests), 'num'), td(tot.usd > 0 ? fmtPct(tasks[k].usd / tot.usd) : '—', 'num')));
+        var t2 = table(['Задача', '₽', 'Запросов', 'Доля'], [1, 2, 3]);
+        Object.keys(tasks).sort(function (a, b) { return tasks[b].rub - tasks[a].rub; }).forEach(function (k) {
+          add(t2.body, add(el('tr'), td(str(k, 60), 'mono'), td(fmtRub(tasks[k].rub), 'num'), td(fmtN(tasks[k].requests), 'num'), td(tot.rub > 0 ? fmtPct(tasks[k].rub / tot.rub) : '—', 'num')));
         });
         add(p, t2.wrap);
         out.appendChild(p);
@@ -1238,19 +1238,19 @@
     title: 'Ключ',
     render: function (out, ctx) {
       return request('/v1/admin/overview').then(function (ov) {
-        var p = panel('Ключ OpenAI заменён', 'Если пришла тревога «Подозрение на утечку ключа», сервер сам включил аварийную паузу. Отозвать ключ он не может — это делаешь ты.');
+        var p = panel('Ключ ИИ заменён', 'Если пришла тревога «Подозрение на утечку ключа», сервер сам включил аварийную паузу. Отозвать ключ он не может — это делаешь ты.');
         var ol = el('ol', 'steps');
         [
-          ['Открой ', el('b', null, 'platform.openai.com → проект Refrain → API keys'), ' и создай новый ключ проекта.'],
+          ['Открой ', el('b', null, 'polza.ai → API-ключи'), ' (или platform.openai.com → проект Refrain → API keys) и создай новый ключ.'],
           ['В папке ', el('span', 'mono', 'server'), ' выполни ', el('span', 'mono', 'npx wrangler secret put OPENAI_API_KEY'), ' и вставь новый ключ.'],
-          ['В OpenAI отзови старый ключ (', el('b', null, 'Revoke'), ').'],
+          ['Там же удали (отзови) старый ключ.'],
           ['Нажми ', el('b', null, '«Ключ заменён»'), ' ниже (нужен PIN): сервер снимет подозрение на утечку.'],
           ['Верни режим кнопкой ', el('b', null, '«Вернуть режим»'), '.']
         ].forEach(function (parts) { var li = el('li'); parts.forEach(function (x) { add(li, x); }); ol.appendChild(li); });
         add(p, ol);
         var row = el('div', 'row');
         var done = btn('Ключ заменён', 'btn-primary', function () {
-          ctx.act(done, function () { return pinned('Подтверди, что ключ OpenAI заменён и старый отозван.', function (pin) { return request('/v1/admin/key-rotated', { method: 'POST', body: {}, pin: pin }); }); }, 'Подозрение снято. Теперь можно вернуть режим.').then(function (x) {
+          ctx.act(done, function () { return pinned('Подтверди, что ключ ИИ заменён и старый отозван.', function (pin) { return request('/v1/admin/key-rotated', { method: 'POST', body: {}, pin: pin }); }); }, 'Подозрение снято. Теперь можно вернуть режим.').then(function (x) {
             if (x && !row.querySelector('.resume')) { var rb = resumeBtn(ctx, ov); rb.classList.add('resume'); row.appendChild(rb); }
           });
         });

@@ -44,7 +44,7 @@ function guardDefaults() {
       signup_wave_ip: r(40, ['ip'], { params: { accounts: 5, windowMin: 60 } })
     },
     halfLifeMin: 30, ipShareKnown: 0.25, level1: 40, level2: 100, slowdownFactor: 3, slowdownMin: 15, blockAccountMin: 1440, blockIpMin: 60, blockAsnMin: 30,
-    massAccounts: 10, massWindowMin: 15, leak: { enabled: true, everyMin: 10, windowMin: 60, lagMin: 15, overShare: 0.25, overUsd: 0.5, idleUsd: 0.1 }
+    massAccounts: 10, massWindowMin: 15, leak: { enabled: true, everyMin: 10, windowMin: 60, lagMin: 15, overShare: 0.25, overRub: 0.5, idleRub: 0.1 }
   };
 }
 
@@ -52,7 +52,7 @@ function makeState() {
   const delivery = (telegram, attempts, email = 'none', nextTryAt = null) => ({ telegram, attempts, email, nextTryAt });
   return {
     mode: 'testers', prevMode: null, paused: { reason: null, since: null }, expireNext: false, log: [],
-    budget: { monthUsd: 20, dayUsd: null, alertAt: [0.5, 0.8, 1], spikeFactor: 3, spikeMinUsd: 0.2, greedyShare: 0.05, signupWaveHour: 30, signupWavePerIp: 5, upstreamErrorShare: 0.2 },
+    budget: { monthRub: 1200, dayRub: null, alertAt: [0.5, 0.8, 1], spikeFactor: 3, spikeMinRub: 12, greedyShare: 0.05, signupWaveHour: 30, signupWavePerIp: 5, upstreamErrorShare: 0.2 },
     groups: [
       { id: 'owner', title: 'Ты', perDay: null, perMonth: null, perMinute: 20, devices: 5, guardFactor: null, blockNeedsConfirm: true },
       { id: 'tester', title: 'Тестировщик', perDay: 100, perMonth: 1500, perMinute: 10, devices: 3, guardFactor: 2, blockNeedsConfirm: true },
@@ -90,13 +90,13 @@ function makeState() {
     journal: Array.from({ length: 60 }, (_, i) => {
       const id = 60 - i;
       if (id % 3 === 0) return { id, at: iso(-id * 600000), actor: 'system', action: 'guard.level2', target: { kind: 'account', id: 'acc_2' }, reason: 'сработали правила: nonce_replay, sig_invalid', rules: ['nonce_replay', 'sig_invalid'], score: 100, after: ['block_account', 'revoke_tokens'] };
-      if (id % 3 === 1) return { id, at: iso(-id * 600000), actor: 'owner:web', action: 'budget.set', target: { kind: 'budget', id: 'month' }, before: { monthUsd: 20 }, after: { monthUsd: 25, alertAt: [0.5, 0.8, 1], note: 'x'.repeat(300) } };
+      if (id % 3 === 1) return { id, at: iso(-id * 600000), actor: 'owner:web', action: 'budget.set', target: { kind: 'budget', id: 'month' }, before: { monthRub: 1200 }, after: { monthRub: 1500, alertAt: [0.5, 0.8, 1], note: 'x'.repeat(300) } };
       return { id, at: iso(-id * 600000), actor: 'owner:tg', action: 'access.set', target: { kind: 'mode', id: 'testers' }, before: 'owner', after: 'testers' };
     }),
     stats: Array.from({ length: 30 }, (_, i) => {
       const day = new Date(Date.now() - (29 - i) * D).toISOString().slice(0, 10);
-      const usd = 0.05 + (i % 7) * 0.04;
-      return { day, usd, pages: usd * 1e6 / 650, requests: 40 + i * 3, byTask: { note: { usd: usd * 0.6, requests: 30 + i }, textbook: { usd: usd * 0.3, requests: 8 + i }, cards: { usd: usd * 0.1, requests: 2 + i } } };
+      const rub = 0.05 + (i % 7) * 0.04;
+      return { day, rub, pages: rub * 1e6 / 38554, requests: 40 + i * 3, byTask: { note: { rub: rub * 0.6, requests: 30 + i }, textbook: { rub: rub * 0.3, requests: 8 + i }, cards: { rub: rub * 0.1, requests: 2 + i } } };
     }),
     bugs: [
       { id: 142, at: iso(-40 * 60000), category: 'note', text: 'После «Сделать с ИИ» таблица съехала вправо и не листается. <img src=x onerror="window.__xss=1"> ' + 'о'.repeat(160), app: { version: '1.31.0', platform: 'win32', os: 'Windows 11', style: 'Кофе' }, log: Array.from({ length: 12 }, (_, i) => `[12:0${i % 10}] TypeError: Cannot read properties of undefined (reading 'rows') at renderTable (Markdown.tsx:${300 + i})`), status: 'new' },
@@ -109,9 +109,9 @@ function makeState() {
 function overview(st) {
   return {
     mode: st.mode, prevMode: st.prevMode, paused: st.paused,
-    month: { spentUsd: 6.4, budgetUsd: st.budget.monthUsd, pages: 9800 },
-    today: { spentUsd: 0.92, budgetUsd: st.budget.dayUsd ?? (st.budget.monthUsd / 31) * 2, students: 214, requests: 1630, errors: 7 },
-    lastHourUsd: 0.31,
+    month: { spentRub: 380, budgetRub: st.budget.monthRub, pages: 9800 },
+    today: { spentRub: 55, budgetRub: st.budget.dayRub ?? (st.budget.monthRub / 31) * 2, students: 214, requests: 1630, errors: 7 },
+    lastHourRub: 18,
     unreadAlerts: st.alerts.filter((a) => !a.readAt).length,
     newBugs: st.bugs.filter((b) => b.status === 'new').length,
     activeBlocks: st.blocks.length
@@ -162,7 +162,7 @@ async function api(route, st) {
   }
   if (m === 'GET' && p === 'budget') return ok({ budget: st.budget });
   if (m === 'PUT' && p === 'budget') {
-    if ((body.monthUsd > st.budget.monthUsd * 2 || (body.dayUsd ?? 0) > (st.budget.dayUsd ?? Infinity) * 2) && !needPin()) return err(400, 'code_invalid');
+    if ((body.monthRub > st.budget.monthRub * 2 || (body.dayRub ?? 0) > (st.budget.dayRub ?? Infinity) * 2) && !needPin()) return err(400, 'code_invalid');
     st.budget = body;
     return ok();
   }
@@ -353,7 +353,7 @@ try {
     await srv.fill('');
     await srv.dispatchEvent('change');
     await adminLogin(page);
-    okIf(await page.locator('.kpi .n', { hasText: '$6,40' }).count() === 1, 'обзор: расход за месяц $6,40');
+    okIf(await page.locator('.kpi .n', { hasText: '380,00 ₽' }).count() === 1, 'обзор: расход за месяц 380,00 ₽');
     okIf(await page.locator('.kpi', { hasText: 'учеников сегодня' }).count() === 1, 'обзор: ученики сегодня');
     okIf((await nav(page, 'Тревоги').locator('.badge').textContent()) === '4', 'значок непрочитанных тревог');
     await storageClean(page, 'admin после входа');
@@ -427,15 +427,15 @@ try {
 
     // бюджет: больше чем вдвое — с PIN, меньше — без
     await go(page, 'Бюджет');
-    await page.locator('label.field', { hasText: 'В месяц, $' }).locator('input').fill('30');
+    await page.locator('label.field', { hasText: 'В месяц, ₽' }).locator('input').fill('1800');
     await page.getByRole('button', { name: 'Сохранить бюджет' }).click();
     await page.locator('#view-msg', { hasText: 'Бюджет сохранён' }).waitFor();
-    okIf(lastReq(st, 'PUT', 'budget').pin === null && st.budget.monthUsd === 30, 'бюджет $30 — без PIN');
-    await page.locator('label.field', { hasText: 'В месяц, $' }).locator('input').fill('90');
+    okIf(lastReq(st, 'PUT', 'budget').pin === null && st.budget.monthRub === 1800, 'бюджет 1800 ₽ — без PIN');
+    await page.locator('label.field', { hasText: 'В месяц, ₽' }).locator('input').fill('5400');
     await page.getByRole('button', { name: 'Сохранить бюджет' }).click();
     await enterPin(page, PIN);
     await page.locator('#view-msg', { hasText: 'Бюджет сохранён' }).waitFor();
-    okIf(lastReq(st, 'PUT', 'budget').pin === PIN && st.budget.monthUsd === 90 && st.budget.greedyShare === 0.05, 'бюджет больше чем вдвое — с PIN, доли не испорчены');
+    okIf(lastReq(st, 'PUT', 'budget').pin === PIN && st.budget.monthRub === 5400 && st.budget.greedyShare === 0.05, 'бюджет больше чем вдвое — с PIN, доли не испорчены');
 
     // ученики: блок и разблокировка
     await go(page, 'Ученики');
