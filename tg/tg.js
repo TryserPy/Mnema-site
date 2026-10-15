@@ -36,6 +36,24 @@
     root.appendChild(c);
   }
 
+  var signedIn = false;
+  function show() {
+    RP.clear(root);
+    RP.mount(root, {
+      via: 'tg',
+      views: ['overview', 'access', 'alerts', 'blocks', 'accounts', 'testers', 'groups', 'budget', 'guard', 'bugs', 'key'],
+      alert: alertParams,
+      openLink: openLink
+    });
+  }
+  // Другая кнопка тревоги, пока панель открыта: Telegram меняет только #… — показываем новую тревогу без нового входа.
+  window.addEventListener('hashchange', function () {
+    var next = RP.parseAlertHash(window.location.hash);
+    if (!next) return;
+    alertParams = next;
+    if (signedIn) show();
+  });
+
   function start() {
     if (!TG || !TG.initData) {
       card('Refrain · панель', 'Эта страница открывается только из бота Refrain в Telegram: кнопка «Открыть панель» или кнопка под тревогой.', 'info');
@@ -43,13 +61,8 @@
     }
     card('Refrain · панель', 'Вход через Telegram…');
     RP.loginTelegram(TG.initData).then(function () {
-      RP.clear(root);
-      RP.mount(root, {
-        via: 'tg',
-        views: ['overview', 'access', 'alerts', 'blocks', 'accounts', 'testers', 'groups', 'budget', 'guard', 'bugs', 'key'],
-        alert: alertParams,
-        openLink: openLink
-      });
+      signedIn = true;
+      show();
     }, function (e) {
       var again = RP.btn('Повторить', 'btn-primary', start);
       var cl = RP.btn('Закрыть', 'btn-ghost', close);
@@ -59,6 +72,7 @@
   }
 
   RP.onExpire(function (why) {
+    signedIn = false;
     var cl = RP.btn('Закрыть', 'btn-primary', close);
     card('Сессия закончилась', why === 'time' ? 'Вход живёт 15 минут. Закрой мини-приложение и открой его снова из бота.' : 'Сервер закрыл сессию. Открой мини-приложение снова из бота.', 'info', [RP.add(RP.el('div', 'row'), cl)]);
   });
