@@ -1,5 +1,6 @@
-/* Панель Refrain ИИ на сайте: вход по коду на почту владельца + PIN. Код и PIN из полей уходят только на сервер панели
-   и сразу стираются из полей; токен держит panel.js в памяти. Экраны — общие с мини-приложением tg/ (panel.js). */
+/* Панель Refrain ИИ на сайте: вход по коду на почту владельца + PIN или по одноразовой ссылке из бота (#link=…, /panel → «В браузере»).
+   Код и PIN из полей уходят только на сервер панели и сразу стираются из полей; ссылка сразу убирается из адреса;
+   токен держит panel.js в памяти. Экраны — общие с мини-приложением tg/ (panel.js). */
 (function () {
   'use strict';
   var RP = window.RefrainPanel;
@@ -82,5 +83,19 @@
     }).then(function () { bLogin.disabled = false; });
   });
 
-  showLogin('');
+  // Ссылка из бота: убрать из адреса (история, закладки) и войти. Не вышло — обычный вход с понятной причиной.
+  var linkM = /(?:^#|&)link=([^&]{1,200})/.exec(window.location.hash || '');
+  if (linkM) {
+    try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) { window.location.hash = ''; }
+    showLogin('');
+    showMsg(codeMsg, 'Вход по ссылке из Telegram…');
+    bCode.disabled = true;
+    RP.loginLink(decodeURIComponent(linkM[1])).then(function () {
+      showMsg(codeMsg, '');
+      showApp();
+    }, function (e) {
+      showMsg(codeMsg, '');
+      showMsg(loginMsg, RP.errText(e, 'link'));
+    }).then(function () { bCode.disabled = false; });
+  } else showLogin('');
 })();

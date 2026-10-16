@@ -253,6 +253,10 @@
   function loginTelegram(initData) {
     return request('/v1/admin/login/telegram', { method: 'POST', body: { initData: initData }, auth: false }).then(function (r) { setSession(r); return true; });
   }
+  /** Вход по одноразовой ссылке из бота (/panel → «В браузере»): для компьютера, где мини-приложение не открывается. */
+  function loginLink(link) {
+    return request('/v1/admin/login/link', { method: 'POST', body: { link: link }, auth: false }).then(function (r) { setSession(r); return true; });
+  }
   function logout() { clearSession(); }
 
   /** Текст ошибки по коду. ctx: 'pin' — запрос с PIN, 'login' — вход по коду, 'tg' — вход из Telegram. */
@@ -265,7 +269,7 @@
         if (ctx === 'login') return 'Неверный код или PIN.' + (typeof x.attemptsLeft === 'number' ? (x.attemptsLeft > 0 ? ' Осталось попыток: ' + x.attemptsLeft + '.' : ' Попытки кончились — запроси новый код.') : '');
         return 'Неверный код.';
       case 'blocked': return 'Панель закрыта' + (x.until ? ' до ' + fmtDT(x.until) : ' на час') + ': было 5 неверных PIN подряд.';
-      case 'device_unknown': return ctx === 'tg' ? 'Telegram не подтвердил вход. Открой мини-приложение заново из бота.' : ctx === 'login' ? 'Вход не подтверждён.' : 'Сессия закончилась. Войди снова.';
+      case 'device_unknown': return ctx === 'tg' ? 'Telegram не подтвердил вход. Открой мини-приложение заново из бота.' : ctx === 'link' ? 'Ссылка устарела или уже использована: она работает один раз и 5 минут. Напиши боту /panel — он пришлёт новую.' : ctx === 'login' ? 'Вход не подтверждён.' : 'Сессия закончилась. Войди снова.';
       case 'too_fast': return 'Слишком часто.' + (x.retryAfter ? ' Подожди ' + fmtMin(Math.max(1, Math.ceil(x.retryAfter / 60))) + '.' : ' Подожди немного.');
       case 'email_rejected': return 'Почта не подходит: нужен адрес вида name@example.com.';
       case 'upstream': return 'Внешний сервис не ответил. Попробуй ещё раз.';
@@ -410,46 +414,122 @@
     return g && g.title ? str(g.title, 40) : GROUP_RU[id] || str(id, 40);
   }
 
+  // ───── значки разделов (рисуются как SVG: без шрифтов-эмодзи, которых на Linux часто нет) ─────
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  var ICONS = {
+    overview: ['M4 13h6V4H4zM14 20h6v-9h-6zM14 4v4h6V4zM4 20h6v-4H4z'],
+    access: ['M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z', 'm9 12 2 2 4-4'],
+    alerts: ['M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z', 'M10 20a2 2 0 0 0 4 0'],
+    blocks: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', 'M5.6 5.6l12.8 12.8'],
+    accounts: ['M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', 'M2 21v-1a6 6 0 0 1 12 0v1', 'M16 3.5a4 4 0 0 1 0 7.5', 'M22 21v-1a6 6 0 0 0-4-5.6'],
+    testers: ['M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3', 'M7.5 15h9'],
+    groups: ['M4 6h16M4 12h10M4 18h6', 'M18 14v6M15 17h6'],
+    budget: ['M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', 'M16 12h2', 'M3 9h18'],
+    guard: ['M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3', 'M2 14h4M10 8h4M18 16h4'],
+    stats: ['M4 20V10M10 20V4M16 20v-7M22 20H2'],
+    journal: ['M6 3h11a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2V5', 'M9 8h6M9 12h6'],
+    bugs: ['M8 8a4 4 0 0 1 8 0v1H8z', 'M6 10h12v4a6 6 0 0 1-12 0z', 'M12 14v6M3 13h3M18 13h3M4 7l3 2M20 7l-3 2M4 20l3-3M20 20l-3-3'],
+    key: ['M14 10a5 5 0 1 0-4 4.9V21h3v-2h2v-2h2v-3.1', 'M9 9h.01'],
+    refresh: ['M20 12a8 8 0 1 1-2.3-5.6', 'M20 4v5h-5'],
+    back: ['m15 18-6-6 6-6'],
+    chevron: ['m9 18 6-6-6-6'],
+    out: ['M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4', 'M10 17l5-5-5-5', 'M15 12H3']
+  };
+  function icon(name, size) {
+    var s = document.createElementNS(SVG_NS, 'svg');
+    s.setAttribute('viewBox', '0 0 24 24');
+    s.setAttribute('width', String(size || 20));
+    s.setAttribute('height', String(size || 20));
+    s.setAttribute('aria-hidden', 'true');
+    s.setAttribute('class', 'ico');
+    (ICONS[name] || []).forEach(function (d) {
+      var p = document.createElementNS(SVG_NS, 'path');
+      p.setAttribute('d', d);
+      s.appendChild(p);
+    });
+    return s;
+  }
+
+  /** Таблицы на телефоне показываются карточками: у каждой ячейки — подпись из заголовка столбца (data-label). */
+  function labelTables(node) {
+    var tables = node.querySelectorAll('.tw table');
+    for (var i = 0; i < tables.length; i++) {
+      var heads = [].map.call(tables[i].querySelectorAll('thead th'), function (th) { return th.textContent; });
+      var rows = tables[i].querySelectorAll('tbody tr, tfoot tr');
+      for (var r = 0; r < rows.length; r++) {
+        for (var c = 0; c < rows[r].children.length; c++) {
+          var cell = rows[r].children[c];
+          if (heads[c]) cell.setAttribute('data-label', heads[c]); else cell.removeAttribute('data-label');
+        }
+      }
+    }
+  }
+
   // ───── оболочка панели ─────
   /**
    * Рисует панель в root. o.views — список экранов; o.via — 'web' | 'tg'; o.openLink(url) — открыть ссылку (в Telegram — через WebApp);
-   * o.onLogout() — после «Выйти»; o.start — первый экран; o.alert — { id, act, target } для экрана тревоги из бота.
+   * o.onLogout() — после «Выйти»; o.start — первый экран; o.alert — { id, act, target } для экрана тревоги из бота;
+   * o.onNavigate(view, home) — после смены экрана (мини-приложение показывает системную кнопку «Назад»).
+   * Широкий экран: меню разделов слева. Телефон и Telegram: «Обзор» со списком разделов, раздел — с кнопкой «Назад».
    */
   function mount(root, o) {
     var views = o.views.filter(function (v) { return VIEWS[v]; });
+    var home = views[0];
     var current = null, seq = 0, badges = {}, flashTimer = 0;
     clear(root);
 
-    var bar = el('div', 'bar');
+    var bar = el('header', 'bar');
     var meta = el('p', 'small muted any');
     meta.setAttribute('aria-live', 'polite');
     var bl = add(el('div', 'bar-l'), el('h1', 'serif', o.via === 'tg' ? 'Refrain · панель' : 'Панель Refrain ИИ'), meta);
     var br = el('div', 'bar-r');
-    add(br, btn('Обновить', 'btn-ghost btn-sm', function () { show(current); }));
-    if (o.onLogout) add(br, btn('Выйти', 'btn-ghost btn-sm', function () { logout(); o.onLogout(); }));
+    var refresh = add(el('button', 'btn btn-ghost btn-sm btn-icon'), icon('refresh', 18), el('span', 'btn-t', 'Обновить'));
+    refresh.type = 'button';
+    refresh.title = 'Обновить';
+    refresh.setAttribute('aria-label', 'Обновить');
+    refresh.addEventListener('click', function () { refreshBadges(); show(current, false, true); });
+    add(br, refresh);
+    if (o.onLogout) {
+      var lo = add(el('button', 'btn btn-ghost btn-sm btn-icon'), icon('out', 18), el('span', 'btn-t', 'Выйти'));
+      lo.type = 'button';
+      lo.title = 'Выйти';
+      lo.setAttribute('aria-label', 'Выйти');
+      lo.addEventListener('click', function () { logout(); o.onLogout(); });
+      add(br, lo);
+    }
     add(bar, bl, br);
 
-    var nav = el('nav', 'nav');
+    var shell = el('div', 'shell');
+    var nav = el('nav', 'side');
     nav.setAttribute('aria-label', 'Разделы панели');
+    var navTitle = el('p', 'side-t', 'Разделы');
+    nav.appendChild(navTitle);
     var navBtns = {};
     views.forEach(function (v) {
-      var b = el('button', null, VIEWS[v].title);
+      var b = el('button', 'side-i');
       b.type = 'button';
       b.dataset.view = v;
+      add(b, icon(v, 20), el('span', 'side-n', VIEWS[v].title), el('span', 'side-b'), icon('chevron', 16));
       b.addEventListener('click', function () { show(v); });
       navBtns[v] = b;
       nav.appendChild(b);
     });
+    var mainCol = el('div', 'main-col');
+    var back = add(el('button', 'back'), icon('back', 18), el('span', null, 'Все разделы'));
+    back.type = 'button';
+    back.addEventListener('click', function () { goHome(); });
     var msg = el('p', 'msg');
     msg.id = 'view-msg';
     msg.hidden = true;
     var box = el('div', 'view');
-    add(root, bar, nav, msg, box);
+    add(mainCol, back, msg, box);
+    add(shell, mainCol, nav);
+    add(root, bar, shell);
 
     function tick() {
       if (!loggedIn()) return;
       var left = Math.max(0, Math.round((sessionEnds() - Date.now()) / 60000));
-      meta.textContent = 'Сервер ' + getServer().replace(/^https?:\/\//, '') + ' · сессия ещё ' + left + ' мин';
+      meta.textContent = (o.via === 'tg' ? '' : 'Сервер ' + getServer().replace(/^https?:\/\//, '') + ' · ') + 'сессия ещё ' + left + ' мин';
     }
     tick();
     var tickTimer = setInterval(function () { if (!root.isConnected) clearInterval(tickTimer); else tick(); }, 20000);
@@ -466,9 +546,9 @@
       var b = navBtns[v];
       if (!b) return;
       badges[v] = n;
-      var old = b.querySelector('.badge');
-      if (old) old.remove();
-      if (n > 0) b.appendChild(el('span', 'badge', n > 99 ? '99+' : n));
+      var slot = b.querySelector('.side-b');
+      clear(slot);
+      if (n > 0) slot.appendChild(el('span', 'badge', n > 99 ? '99+' : n));
     }
     function refreshBadges(ov) {
       var p = ov ? Promise.resolve(ov) : request('/v1/admin/overview');
@@ -485,7 +565,7 @@
       go: function (v) { show(v); },
       flash: flash,
       refreshBadges: refreshBadges,
-      rerender: function () { show(current, true); },
+      rerender: function () { show(current, true, true); },
       openLink: o.openLink || function (u) { window.open(u, '_blank', 'noopener,noreferrer'); },
       has: function (v) { return views.indexOf(v) >= 0; },
       /** Кнопка действия: блокирует себя на время запроса, показывает итог. fn возвращает null при отмене. */
@@ -501,21 +581,40 @@
       }
     };
 
-    function show(v, keepMsg) {
-      if (!v) v = views[0];
+    // «Назад» в браузере телефона: раздел кладётся в историю, системный жест возвращает к списку разделов.
+    var pushed = false;
+    function onPop() { if (!root.isConnected) { window.removeEventListener('popstate', onPop); return; } pushed = false; if (current !== home) show(home, false, false, true); }
+    if (o.via !== 'tg') window.addEventListener('popstate', onPop);
+    function goHome() {
+      if (pushed) { try { history.back(); return; } catch (e) { /* без истории */ } }
+      show(home);
+    }
+
+    function show(v, keepMsg, keepScroll, fromPop) {
+      if (!v) v = home;
+      var changed = v !== current;
       current = v;
       var my = ++seq;
+      var atHome = v === home;
+      shell.setAttribute('data-at', atHome ? 'home' : 'section');
       Object.keys(navBtns).forEach(function (k) { if (k === v) navBtns[k].setAttribute('aria-current', 'page'); else navBtns[k].removeAttribute('aria-current'); });
-      if (navBtns[v] && navBtns[v].scrollIntoView && nav.scrollWidth > nav.clientWidth) navBtns[v].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      if (o.via !== 'tg' && !fromPop) {
+        try {
+          if (!atHome && !pushed) { history.pushState({ rfPanel: v }, ''); pushed = true; }
+          else if (atHome && pushed) { pushed = false; history.back(); }
+        } catch (e) { /* история недоступна */ }
+      }
       if (!keepMsg) flash('');
       clear(box);
       var loading = el('div', 'panel');
       add(loading, el('div', 'skel'), el('div', 'skel'), el('div', 'skel short'));
       box.appendChild(loading);
+      if (changed && !keepScroll) window.scrollTo(0, 0);
       var out = el('div', 'view-in');
       var run = v === 'alert' ? renderAlertScreen(out, ctx, o.alert || {}) : VIEWS[v].render(out, ctx);
       Promise.resolve(run).then(function () {
         if (my !== seq) return;
+        labelTables(out);
         clear(box).appendChild(out);
       }, function (e) {
         if (my !== seq) return;
@@ -525,11 +624,12 @@
         box.appendChild(p);
       });
       tick();
+      if (o.onNavigate) try { o.onNavigate(v, atHome); } catch (e) { /* обработчик оболочки */ }
     }
 
     refreshBadges();
-    show(o.alert ? 'alert' : o.start || views[0]);
-    return { show: show, flash: flash };
+    show(o.alert ? 'alert' : o.start || home);
+    return { show: show, flash: flash, home: goHome, current: function () { return current; } };
   }
 
   // ───── экраны ─────
@@ -1347,6 +1447,7 @@
     loginEmailStart: loginEmailStart,
     loginEmailVerify: loginEmailVerify,
     loginTelegram: loginTelegram,
+    loginLink: loginLink,
     logout: logout,
     loggedIn: loggedIn,
     onExpire: onExpire,
