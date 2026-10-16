@@ -53,7 +53,8 @@ function makeState() {
   const delivery = (telegram, attempts, email = 'none', nextTryAt = null) => ({ telegram, attempts, email, nextTryAt });
   return {
     mode: 'testers', prevMode: null, paused: { reason: null, since: null }, expireNext: false, log: [],
-    budget: { monthRub: 1200, dayRub: null, alertAt: [0.5, 0.8, 1], spikeFactor: 3, spikeMinRub: 12, greedyShare: 0.05, signupWaveHour: 30, signupWavePerIp: 5, upstreamErrorShare: 0.2 },
+    balanceRub: 96.4,
+    budget: { monthRub: 1200, dayRub: null, alertAt: [0.5, 0.8, 1], spikeFactor: 3, spikeMinRub: 12, greedyShare: 0.05, signupWaveHour: 30, signupWavePerIp: 5, upstreamErrorShare: 0.2, balanceAlertRub: 150, balanceAlertDays: 3 },
     groups: [
       { id: 'owner', title: 'Ты', perDay: null, perMonth: null, perMinute: 20, devices: 5, guardFactor: null, blockNeedsConfirm: true },
       { id: 'tester', title: 'Тестировщик', perDay: 100, perMonth: 1500, perMinute: 10, devices: 3, guardFactor: 2, blockNeedsConfirm: true },
@@ -115,7 +116,8 @@ function overview(st) {
     lastHourRub: 18,
     unreadAlerts: st.alerts.filter((a) => !a.readAt).length,
     newBugs: st.bugs.filter((b) => b.status === 'new').length,
-    activeBlocks: st.blocks.length
+    activeBlocks: st.blocks.length,
+    balance: { rub: st.balanceRub, at: iso(-60000), daysLeft: st.balanceRub / 12.5, low: st.balanceRub < st.budget.balanceAlertRub, topUpUrl: 'https://polza.ai/dashboard' }
   };
 }
 
@@ -371,6 +373,8 @@ try {
     await adminLogin(page);
     okIf(await page.locator('.kpi .n', { hasText: '380,00 ₽' }).count() === 1, 'обзор: расход за месяц 380,00 ₽');
     okIf(await page.locator('.kpi', { hasText: 'учеников сегодня' }).count() === 1, 'обзор: ученики сегодня');
+    okIf(await page.locator('.kpi-balance.low', { hasText: '96,40 ₽' }).count() === 1, 'обзор: баланс Polza 96,40 ₽, «пора пополнить»');
+    okIf((await page.locator('.kpi-balance').textContent()).includes('хватит примерно на 7,7'), 'обзор: прогноз — на сколько дней хватит');
     okIf((await nav(page, 'Тревоги').locator('.badge').textContent()) === '4', 'значок непрочитанных тревог');
     await storageClean(page, 'admin после входа');
 

@@ -378,7 +378,7 @@
   var ALERT_KIND = {
     key_leak: 'утечка ключа', emergency_pause: 'аварийная пауза', forgery: 'подделка запроса', travel: 'несколько мест', contract: 'выход за контракт',
     ip_block: 'блок IP', block: 'блок', pending_block: 'ждёт решения', budget: 'бюджет', spike: 'скачок расхода', greedy: 'жадный ученик',
-    signup_wave: 'волна регистраций', upstream: 'сбои OpenAI', panel_login: 'вход в панель', pin_wrong: 'неверный PIN', pin_locked: 'панель закрыта', bug: 'баг'
+    signup_wave: 'волна регистраций', upstream: 'сбои OpenAI', balance_low: 'мало денег на Polza', panel_login: 'вход в панель', pin_wrong: 'неверный PIN', pin_locked: 'панель закрыта', bug: 'баг'
   };
   var REACTION = {
     slowdown: 'замедлил запросы', block_account: 'заблокировал аккаунт', revoke_tokens: 'закрыл сессии', unbind_device: 'отвязал устройство',
@@ -650,6 +650,28 @@
     return k;
   }
 
+  /** Плитка «Баланс Polza»: остаток на счёте поставщика ИИ, на сколько дней хватит, ссылка «Пополнить». */
+  function balanceKpi(b, ctx) {
+    if (!b) return null;
+    var known = typeof b.rub === 'number' && isFinite(b.rub);
+    var sub = !known ? 'Polza не ответила — проверь ключ и интернет' : b.daysLeft == null ? 'расхода за неделю не было' : 'хватит примерно на ' + fmtN(b.daysLeft, 1) + ' ' + plural(Math.floor(num(b.daysLeft)), ['день', 'дня', 'дней']);
+    var extra = el('div', 'kpi-x');
+    if (b.low) add(extra, tag('пора пополнить', 'warn'));
+    if (b.at) add(extra, el('span', 's', 'на ' + fmtTime(b.at)));
+    if (b.topUpUrl && /^https:\/\//.test(String(b.topUpUrl))) {
+      var a = el('a', 'small', 'Пополнить');
+      a.href = String(b.topUpUrl);
+      a.rel = 'noopener noreferrer';
+      a.target = '_blank';
+      a.addEventListener('click', function (ev) { ev.preventDefault(); ctx.openLink(a.href); });
+      add(extra, a);
+    }
+    var k = kpi(known ? fmtRub(b.rub) : '—', 'на счёте Polza.ai', sub, extra);
+    k.classList.add('kpi-balance');
+    if (b.low) k.classList.add('low');
+    return k;
+  }
+
   /** «Вернуть режим»: на сервере — prevMode или «Тестировщики»; переход на «Все» — с PIN. */
   function resumeBtn(ctx, ov, after) {
     var to = ov.prevMode || 'testers';
@@ -692,6 +714,7 @@
         if (ov.mode !== 'owner' && ov.mode !== 'off') add(modeRow, pauseBtn(ctx));
         add(p, modeRow);
         var k = el('div', 'kpis');
+        add(k, balanceKpi(ov.balance, ctx));
         add(k,
           kpi(fmtRub(month.spentRub), 'из ' + fmtRub(month.budgetRub) + ' за месяц', fmtN(month.pages) + ' ' + plural(num(month.pages), ['страница', 'страницы', 'страниц']), meter(num(month.spentRub), num(month.budgetRub))),
           kpi(fmtRub(today.spentRub), 'из ' + fmtRub(today.budgetRub) + ' сегодня', null, meter(num(today.spentRub), num(today.budgetRub))),
@@ -968,6 +991,8 @@
         var waveH = n(b.signupWaveHour, { min: 1, max: 100000, step: 1 });
         var waveIp = n(b.signupWavePerIp, { min: 1, max: 1000, step: 1 });
         var upstream = n(Math.round(num(b.upstreamErrorShare) * 1000) / 10, { min: 1, max: 100, step: 1 });
+        var balRub = n(b.balanceAlertRub == null ? 150 : b.balanceAlertRub, { min: 0, max: 1000000, step: 10 });
+        var balDays = n(b.balanceAlertDays == null ? 3 : b.balanceAlertDays, { min: 0, max: 365, step: 1 });
         add(p,
           add(el('div', 'grid2'), field('В месяц, ₽', month), field('В сутки, ₽', day, 'Пусто — двойная средняя доля месяца.')),
           field('Тревоги при расходе, % месяца', alertAt, 'Через запятую. На 100 % — пауза для всех, кроме тебя.'),
@@ -975,14 +1000,17 @@
           add(el('div', 'grid2'), field('Час дороже среднего, раз', spikeF), field('И не меньше, ₽ за час', spikeMin)),
           el('h3', null, 'Тревоги'),
           add(el('div', 'grid2'), field('Жадный ученик, % дневного бюджета', greedy), field('Сбои OpenAI, % ошибок за 10 минут', upstream)),
-          add(el('div', 'grid2'), field('Волна: новых аккаунтов за час', waveH), field('Волна: новых с одного IP', waveIp))
+          add(el('div', 'grid2'), field('Волна: новых аккаунтов за час', waveH), field('Волна: новых с одного IP', waveIp)),
+          el('h3', null, 'Баланс Polza.ai'),
+          add(el('div', 'grid2'), field('Тревога, если на счёте меньше, ₽', balRub, '0 — не следить за суммой.'), field('…или хватит меньше чем на, дней', balDays, 'По среднему расходу за 7 дней. 0 — не следить.'))
         );
         var save = btn('Сохранить бюджет', 'btn-primary', function () {
           var shares = alertAt.value.split(/[;,\s]+/).filter(Boolean).map(function (x) { return Number(x.replace(',', '.')) / 100; });
           var next = {
             monthRub: Number(month.value), dayRub: day.value === '' ? null : Number(day.value), alertAt: shares,
             spikeFactor: Number(spikeF.value), spikeMinRub: Number(spikeMin.value), greedyShare: Number(greedy.value) / 100,
-            signupWaveHour: Number(waveH.value), signupWavePerIp: Number(waveIp.value), upstreamErrorShare: Number(upstream.value) / 100
+            signupWaveHour: Number(waveH.value), signupWavePerIp: Number(waveIp.value), upstreamErrorShare: Number(upstream.value) / 100,
+            balanceAlertRub: Number(balRub.value), balanceAlertDays: Number(balDays.value)
           };
           var bad = Object.keys(next).some(function (k) { return k !== 'dayRub' && k !== 'alertAt' && !(isFinite(next[k]) && next[k] >= 0); }) || (next.dayRub !== null && !(isFinite(next.dayRub) && next.dayRub >= 0)) || !shares.length || shares.some(function (x) { return !(x > 0 && x <= 1); });
           if (bad) { ctx.flash('Проверь числа: доли — от 1 до 100 %, суммы — не меньше нуля.', 'err'); return; }
