@@ -1,0 +1,60 @@
+/* Страница «Данные и Refrain ИИ». Цвета — как на сайте (css/style.css); внешних шрифтов нет, поэтому CSP строгая. */
+:root{--accent:#3F51D8;--bg:#F6F3EC;--bg2:#ECE7DC;--surface:#FFFFFF;--ink:#17181E;--ink2:#464853;--ink3:#64666F;--line:rgba(23,24,30,.10);--line2:rgba(23,24,30,.18);--glass:rgba(246,243,236,.72);--accent-text:#3F51D8;--good:#1F7A52;--bad:#B3261E;--shadow:0 1px 2px rgba(20,20,30,.05),0 18px 40px -18px rgba(20,20,30,.22);color-scheme:light}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0E0F14;--bg2:#1A1C24;--surface:#16181F;--ink:#F1EFE9;--ink2:#BCBEC8;--ink3:#9496A2;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.18);--glass:rgba(14,15,20,.66);--accent-text:#A0AAEC;--good:#5BC48F;--bad:#FF8A80;--shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0E0F14;--bg2:#1A1C24;--surface:#16181F;--ink:#F1EFE9;--ink2:#BCBEC8;--ink3:#9496A2;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.18);--glass:rgba(14,15,20,.66);--accent-text:#A0AAEC;--good:#5BC48F;--bad:#FF8A80;--shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}
+
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Onest',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,p,ul,ol{margin:0}
+a{color:var(--accent-text)}
+a:hover{color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent-text);outline-offset:3px}
+.serif{font-family:'Literata',Georgia,'Times New Roman',serif;font-weight:600;letter-spacing:-0.02em}
+.mono{font-family:ui-monospace,'JetBrains Mono',SFMono-Regular,Consolas,monospace;font-size:.92em}
+.muted{color:var(--ink2)}
+.small{font-size:13px;line-height:1.45}
+.wrap{width:100%;max-width:860px;margin:0 auto;padding:0 20px}
+
+.top{position:sticky;top:0;z-index:5;background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:-0.01em;text-decoration:none;color:var(--ink)}
+.brand img{display:block;border-radius:9px}
+.top-link{font-size:14px;text-decoration:none}
+
+.doc{padding-top:40px;padding-bottom:24px;display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--accent-text)}
+h1{font-size:clamp(30px,6vw,46px);line-height:1.08}
+.lead{font-size:18px;color:var(--ink2);max-width:68ch}
+.lead b{color:var(--ink)}
+.block{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+h2{font-size:clamp(21px,4vw,26px);line-height:1.2;font-weight:600}
+ul,ol{padding-left:22px;display:flex;flex-direction:column;gap:8px;max-width:72ch}
+p{max-width:72ch}
+
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.c{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--shadow);min-width:0}
+.c b{font-size:15px}
+.c span{font-size:14px;color:var(--ink2);overflow-wrap:anywhere}
+.c.good b{color:var(--good)}
+.c.bad b{color:var(--bad)}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);white-space:nowrap}
+td{color:var(--ink2)}
+td b{color:var(--ink)}
+
+.upd{margin-top:22px}
+.foot{padding-top:8px;padding-bottom:48px;font-size:14px}
+
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .doc{padding-top:22px}
+  .lead{font-size:16px}
+  .cards{grid-template-columns:1fr}
+}

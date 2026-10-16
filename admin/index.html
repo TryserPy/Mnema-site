@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src https:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Панель Refrain ИИ</title>
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0F14" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+<noscript><p class="noscript">Для панели нужен JavaScript.</p></noscript>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="../" aria-label="Refrain — на сайт"><img src="../favicon.svg" alt="" width="32" height="32"><span>Refrain</span></a>
+    <span class="top-tag">Панель Refrain ИИ · только для владельца</span>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+
+  <!-- вход -->
+  <section class="card" id="login" hidden>
+    <h1 class="serif">Панель Refrain ИИ</h1>
+    <p class="muted">Страница скрытая и без ссылок с сайта. Код входа сервер отправляет только на почту владельца из своих секретов, адрес здесь не вводится. Вход живёт 15 минут и только в памяти страницы: после перезагрузки нужно войти снова. О каждом входе приходит сообщение в Telegram.</p>
+
+    <div class="row">
+      <button class="btn btn-ghost" type="button" id="b-code">Прислать код на почту</button>
+    </div>
+    <p class="msg info" id="code-msg" role="status" hidden></p>
+
+    <form id="login-form" autocomplete="off" novalidate>
+      <div class="grid2">
+        <label class="field">
+          <span class="lbl">Код из письма</span>
+          <input id="f-code" class="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" spellcheck="false" placeholder="000000" required>
+        </label>
+        <label class="field">
+          <span class="lbl">PIN</span>
+          <input id="f-pin" class="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="6" pattern="[0-9]{6}" spellcheck="false" placeholder="••••••" required>
+        </label>
+      </div>
+      <p class="msg err" id="login-msg" role="alert" hidden></p>
+      <div class="row">
+        <button class="btn btn-primary" type="submit" id="b-login">Войти</button>
+      </div>
+    </form>
+
+    <div id="server-slot"></div>
+  </section>
+
+  <!-- панель после входа -->
+  <section id="app" hidden></section>
+
+</main>
+
+<footer class="foot wrap">
+  <p class="small muted">Токен панели и PIN хранятся только в памяти страницы, PIN — лишь на время одного запроса. В браузере запоминается только адрес сервера. Опасные действия (режим «Все», бюджет больше чем вдвое, «Снять все», пороги, «Ключ заменён») просят PIN; 5 неверных PIN подряд закрывают панель на час.</p>
+</footer>
+
+<script src="panel.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

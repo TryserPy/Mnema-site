@@ -1,0 +1,4 @@
+/* Мини-приложение в Telegram: та же панель (../admin/panel.css), но без шапки сайта — сверху и так заголовок Telegram. */
+body.tg main{padding-top:14px}
+body.tg .card{margin-top:8px}
+body.tg .bar h1{font-size:clamp(24px,6vw,32px)}
