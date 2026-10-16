@@ -1,0 +1,1 @@
+import{i as e}from"./App-DjY_w_ta.js";export{e as linkRoute};
