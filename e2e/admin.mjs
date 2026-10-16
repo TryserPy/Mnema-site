@@ -21,6 +21,7 @@ const OUT = process.env.OUT || path.join(os.tmpdir(), 'rf-admin-shots');
 const PIN = '246810';
 const CODE = '135790';
 const TOKEN = 'mock-token-' + 'q'.repeat(32);
+const LINK = 'l1.' + (Date.now() + 300000) + '.' + 'n'.repeat(22) + '.' + 's'.repeat(43);
 
 const failures = [];
 const fail = (msg) => { failures.push(msg); console.log('  ✗ ' + msg); };
@@ -52,7 +53,8 @@ function makeState() {
   const delivery = (telegram, attempts, email = 'none', nextTryAt = null) => ({ telegram, attempts, email, nextTryAt });
   return {
     mode: 'testers', prevMode: null, paused: { reason: null, since: null }, expireNext: false, log: [],
-    budget: { monthRub: 1200, dayRub: null, alertAt: [0.5, 0.8, 1], spikeFactor: 3, spikeMinRub: 12, greedyShare: 0.05, signupWaveHour: 30, signupWavePerIp: 5, upstreamErrorShare: 0.2 },
+    balanceRub: 96.4,
+    budget: { monthRub: 1200, dayRub: null, alertAt: [0.5, 0.8, 1], spikeFactor: 3, spikeMinRub: 12, greedyShare: 0.05, signupWaveHour: 30, signupWavePerIp: 5, upstreamErrorShare: 0.2, balanceAlertRub: 150, balanceAlertDays: 3 },
     groups: [
       { id: 'owner', title: 'Ты', perDay: null, perMonth: null, perMinute: 20, devices: 5, guardFactor: null, blockNeedsConfirm: true },
       { id: 'tester', title: 'Тестировщик', perDay: 100, perMonth: 1500, perMinute: 10, devices: 3, guardFactor: 2, blockNeedsConfirm: true },
@@ -114,7 +116,8 @@ function overview(st) {
     lastHourRub: 18,
     unreadAlerts: st.alerts.filter((a) => !a.readAt).length,
     newBugs: st.bugs.filter((b) => b.status === 'new').length,
-    activeBlocks: st.blocks.length
+    activeBlocks: st.blocks.length,
+    balance: { rub: st.balanceRub, at: iso(-60000), daysLeft: st.balanceRub / 12.5, low: st.balanceRub < st.budget.balanceAlertRub, topUpUrl: 'https://polza.ai/dashboard' }
   };
 }
 
@@ -134,6 +137,11 @@ async function api(route, st) {
   const err = (status, code, extra = {}) => send(status, { ok: false, error: { code, message: 'mock', ...extra } });
 
   if (m === 'POST' && p === 'login/email/start') return ok();
+  if (m === 'POST' && p === 'login/link') {
+    if (body.link !== LINK || st.linkUsed) return err(401, 'device_unknown');
+    st.linkUsed = true;
+    return ok({ token: TOKEN, expiresAt: iso(15 * 60000) });
+  }
   if (m === 'POST' && p === 'login/email/verify') {
     if (body.code !== CODE) return err(400, 'code_invalid', { attemptsLeft: 4 });
     if (body.pin !== PIN) return err(400, 'code_invalid');
@@ -204,7 +212,8 @@ const tgStub = `window.Telegram = { WebApp: {
   initData: window.__tgNoInit ? '' : 'query_id=AAE&user=%7B%22id%22%3A1%2C%22first_name%22%3A%22Owner%22%7D&auth_date=' + Math.floor(Date.now() / 1000) + '&hash=0123abcd',
   colorScheme: window.__tgScheme || 'light',
   ready: function () {}, expand: function () {}, onEvent: function () {},
-  close: function () { window.__tgClosed = true; }, openLink: function (u) { window.__tgOpened = u; }
+  close: function () { window.__tgClosed = true; }, openLink: function (u) { window.__tgOpened = u; },
+  BackButton: { show: function () { window.__tgBackShown = true; }, hide: function () { window.__tgBackShown = false; }, onClick: function (f) { window.__tgBack = f; } }
 } };`;
 
 // ───── страница и проверки ─────
@@ -260,7 +269,7 @@ async function overflow(page, tag) {
     return [...new Set(out)].slice(0, 12);
   });
   if (r.length) fail(`${tag}: ${r.join(' | ')}`);
-  if (process.env.SHOTS) { fs.mkdirSync(OUT, { recursive: true }); await page.screenshot({ path: path.join(OUT, tag.replace(/[^\w.-]+/g, '_') + '.png'), fullPage: true }); }
+  if (process.env.SHOTS) { fs.mkdirSync(OUT, { recursive: true }); await page.screenshot({ path: path.join(OUT, tag.replace(/[^\p{L}\d.-]+/gu, '_') + '.png'), fullPage: true }); }
   return r.length === 0;
 }
 
@@ -288,8 +297,17 @@ async function confirmDialog(page, name) {
   await d.waitFor({ state: 'visible', timeout: 4000 });
   await d.getByRole('button', { name }).click();
 }
-const nav = (page, title) => page.locator('nav.nav button', { hasText: title }).first();
-async function go(page, title) { await nav(page, title).click(); await waitView(page); }
+const nav = (page, title) => page.locator('nav.side button', { hasText: title }).first();
+/** Перейти в раздел. На телефоне меню видно только на «Обзоре»: сначала «Назад» (кнопка на сайте, системная в Telegram). */
+async function go(page, title) {
+  if (!(await nav(page, title).isVisible())) {
+    if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+    else await page.evaluate(() => window.__tgBack && window.__tgBack());
+    await waitView(page);
+  }
+  if (await nav(page, title).isVisible()) await nav(page, title).click();
+  await waitView(page);
+}
 const lastReq = (st, m, p) => [...st.log].reverse().find((x) => x.m === m && x.p === p);
 
 async function adminLogin(page) {
@@ -299,7 +317,7 @@ async function adminLogin(page) {
   await page.fill('#f-code', CODE);
   await page.fill('#f-pin', PIN);
   await page.click('#b-login');
-  await page.locator('#app nav.nav').waitFor({ timeout: 5000 });
+  await page.locator('#app nav.side').waitFor({ state: 'attached', timeout: 5000 });
   await waitView(page);
 }
 
@@ -355,6 +373,8 @@ try {
     await adminLogin(page);
     okIf(await page.locator('.kpi .n', { hasText: '380,00 ₽' }).count() === 1, 'обзор: расход за месяц 380,00 ₽');
     okIf(await page.locator('.kpi', { hasText: 'учеников сегодня' }).count() === 1, 'обзор: ученики сегодня');
+    okIf(await page.locator('.kpi-balance.low', { hasText: '96,40 ₽' }).count() === 1, 'обзор: баланс Polza 96,40 ₽, «пора пополнить»');
+    okIf((await page.locator('.kpi-balance').textContent()).includes('хватит примерно на 7,7'), 'обзор: прогноз — на сколько дней хватит');
     okIf((await nav(page, 'Тревоги').locator('.badge').textContent()) === '4', 'значок непрочитанных тревог');
     await storageClean(page, 'admin после входа');
 
@@ -535,7 +555,42 @@ try {
     const { page, ctx } = await newPage({ width: 380, tg: { noInit: true } });
     await page.goto(ORIGIN + '/tg/');
     await page.locator('.card .msg.info').waitFor();
-    okIf((await page.locator('.card .msg.info').textContent()).includes('только из бота'), 'tg/ вне Telegram — подсказка открыть из бота');
+    okIf((await page.locator('.card .msg.info').textContent()).includes('из бота'), 'tg/ вне Telegram — подсказка открыть из бота');
+    okIf((await page.locator('.card').textContent()).includes('/panel'), 'tg/ вне Telegram (Linux) — подсказка про ссылку для браузера /panel');
+    await ctx.close();
+  }
+  // мини-приложение: «Обзор» со списком разделов, в разделе — системная «Назад» Telegram
+  {
+    const { page, ctx } = await newPage({ width: 380 });
+    await page.goto(ORIGIN + '/tg/');
+    await waitView(page);
+    okIf(await nav(page, 'Тревоги').isVisible(), 'tg: на «Обзоре» виден список разделов');
+    okIf(await page.evaluate(() => window.__tgBackShown !== true), 'tg: на «Обзоре» системной «Назад» нет');
+    await nav(page, 'Ученики').click();
+    await waitView(page);
+    okIf(!(await nav(page, 'Тревоги').isVisible()) && (await page.evaluate(() => window.__tgBackShown === true)), 'tg: в разделе список спрятан, системная «Назад» показана');
+    await page.evaluate(() => window.__tgBack());
+    await waitView(page);
+    okIf((await nav(page, 'Тревоги').isVisible()) && (await page.evaluate(() => window.__tgBackShown === false)), 'tg: «Назад» возвращает к списку разделов');
+    await ctx.close();
+  }
+  // сайт: вход по ссылке из бота (#link=…), ссылка убирается из адреса, второй раз не пускает
+  {
+    const { page, st, ctx } = await newPage({ width: 380 });
+    await page.goto(ORIGIN + '/admin/#link=' + LINK);
+    await page.locator('#app nav.side').waitFor({ state: 'attached', timeout: 5000 });
+    await waitView(page);
+    okIf(lastReq(st, 'POST', 'login/link')?.body.link === LINK, 'вход по ссылке из бота');
+    okIf(!page.url().includes('link='), 'ссылка убрана из адреса');
+    await storageClean(page, 'вход по ссылке');
+    await go(page, 'Тревоги');
+    await page.goBack();
+    await waitView(page);
+    okIf(await nav(page, 'Блокировки').isVisible(), 'сайт на телефоне: системная «Назад» возвращает к списку разделов');
+    await page.goto('about:blank');
+    await page.goto(ORIGIN + '/admin/#link=' + LINK);
+    await page.locator('#login-msg', { hasText: 'Ссылка устарела' }).waitFor({ timeout: 5000 });
+    okIf(await page.locator('#login').isVisible(), 'использованная ссылка — обычный вход с причиной');
     await ctx.close();
   }
 
