@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  var DEFAULT_SERVER = 'https://refrain-ai.example.workers.dev';
+  var DEFAULT_SERVER = 'https://refrain-ai.mnema-ai.workers.dev';
   var K_SERVER = 'rf-admin-server';
   var SESSION_MS = 15 * 60000;
   var TIMEOUT_MS = 20000;

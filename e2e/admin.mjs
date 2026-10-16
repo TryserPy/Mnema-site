@@ -13,7 +13,7 @@ import { fileURLToPath } from 'url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT || 8765);
 const ORIGIN = `http://127.0.0.1:${PORT}`;
-const SERVER = 'https://refrain-ai.example.workers.dev';
+const SERVER = 'https://refrain-ai.mnema-ai.workers.dev';
 const TG_JS = 'https://telegram.org/js/telegram-web-app.js';
 const CHROME = process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const OUT = process.env.OUT || path.join(os.tmpdir(), 'rf-admin-shots');
@@ -484,7 +484,7 @@ try {
     await page.getByRole('button', { name: 'Выйти' }).click();
     okIf(await page.locator('#login').isVisible() && (await page.locator('#app').isHidden()), '«Выйти» возвращает ко входу');
     const before = st.log.length;
-    await page.evaluate(() => fetch('https://refrain-ai.example.workers.dev/v1/admin/overview').catch(() => {}));
+    await page.evaluate(() => fetch('https://refrain-ai.mnema-ai.workers.dev/v1/admin/overview').catch(() => {}));
     okIf(st.log.slice(before).every((x) => x.p !== 'overview' || true), 'после выхода токен стёрт (новый вход обязателен)');
     await storageClean(page, 'admin в конце');
     await cspClean(page, 'admin');
