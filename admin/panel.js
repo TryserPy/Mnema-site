@@ -244,18 +244,41 @@
     }).then(function (d) { clearTimeout(timer); return d; }, function (e) { clearTimeout(timer); throw e; });
   }
 
+  /**
+   * Устройство панели: случайный id этого браузера (живёт только здесь) и подпись «Chrome · Windows».
+   * Сервер помнит устройства, с которых ты подтвердил «Это я», и с них не присылает тревогу о входе.
+   */
+  function panelDevice() {
+    var id = '';
+    try {
+      id = localStorage.getItem('rf-panel-device') || '';
+      if (!/^[A-Za-z0-9_-]{16,64}$/.test(id)) {
+        var b = new Uint8Array(18);
+        crypto.getRandomValues(b);
+        id = btoa(String.fromCharCode.apply(null, b)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        localStorage.setItem('rf-panel-device', id);
+      }
+    } catch (e) {
+      return undefined;
+    }
+    var ua = navigator.userAgent;
+    var os = /Android/.test(ua) ? 'Android' : /iPhone|iPad/.test(ua) ? 'iOS' : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'устройство';
+    var br = /Telegram/.test(ua) || window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData ? 'Telegram' : /Edg\//.test(ua) ? 'Edge' : /YaBrowser/.test(ua) ? 'Яндекс Браузер' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'браузер';
+    return { id: id, name: br + ' · ' + os };
+  }
+
   function loginEmailStart() {
     return request('/v1/admin/login/email/start', { method: 'POST', body: {}, auth: false }).then(function () { return true; });
   }
   function loginEmailVerify(code, pin) {
-    return request('/v1/admin/login/email/verify', { method: 'POST', body: { code: code, pin: pin }, auth: false }).then(function (r) { setSession(r); return true; });
+    return request('/v1/admin/login/email/verify', { method: 'POST', body: { code: code, pin: pin, device: panelDevice() }, auth: false }).then(function (r) { setSession(r); return true; });
   }
   function loginTelegram(initData) {
-    return request('/v1/admin/login/telegram', { method: 'POST', body: { initData: initData }, auth: false }).then(function (r) { setSession(r); return true; });
+    return request('/v1/admin/login/telegram', { method: 'POST', body: { initData: initData, device: panelDevice() }, auth: false }).then(function (r) { setSession(r); return true; });
   }
   /** Вход по одноразовой ссылке из бота (/panel → «В браузере»): для компьютера, где мини-приложение не открывается. */
   function loginLink(link) {
-    return request('/v1/admin/login/link', { method: 'POST', body: { link: link }, auth: false }).then(function (r) { setSession(r); return true; });
+    return request('/v1/admin/login/link', { method: 'POST', body: { link: link, device: panelDevice() }, auth: false }).then(function (r) { setSession(r); return true; });
   }
   function logout() { clearSession(); }
 
