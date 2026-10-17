@@ -1,1 +1,0 @@
-import{i as e}from"./App-C5Vngydr.js";export{e as linkRoute};
