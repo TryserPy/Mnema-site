@@ -1,1 +1,0 @@
-import{i as e}from"./App-zpIzqio3.js";export{e as linkRoute};
