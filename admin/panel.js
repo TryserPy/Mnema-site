@@ -6,6 +6,8 @@
 (function () {
   'use strict';
 
+  // ИИ-кредиты (1.33): 1 прежняя «страница» = 10 кредитов (shared/refrain/credits.ts в Mnema). Сервер хранит лимиты и расход в страницах.
+  var CREDITS = 10;
   var DEFAULT_SERVER = 'https://refrain-ai.mnema-ai.workers.dev';
   var K_SERVER = 'rf-admin-server';
   var SESSION_MS = 15 * 60000;
@@ -739,7 +741,7 @@
         var k = el('div', 'kpis');
         add(k, balanceKpi(ov.balance, ctx));
         add(k,
-          kpi(fmtRub(month.spentRub), 'из ' + fmtRub(month.budgetRub) + ' за месяц', fmtN(month.pages) + ' ' + plural(num(month.pages), ['страница', 'страницы', 'страниц']), meter(num(month.spentRub), num(month.budgetRub))),
+          kpi(fmtRub(month.spentRub), 'из ' + fmtRub(month.budgetRub) + ' за месяц', fmtN(num(month.pages) * CREDITS) + ' ' + plural(Math.round(num(month.pages) * CREDITS), ['кредит', 'кредита', 'кредитов']) + ' по цене', meter(num(month.spentRub), num(month.budgetRub))),
           kpi(fmtRub(today.spentRub), 'из ' + fmtRub(today.budgetRub) + ' сегодня', null, meter(num(today.spentRub), num(today.budgetRub))),
           kpi(fmtN(today.students), plural(num(today.students), ['ученик сегодня', 'ученика сегодня', 'учеников сегодня']), 'запросов ' + fmtN(today.requests) + ' · ошибок ' + fmtN(today.errors)),
           kpi(fmtRub(ov.lastHourRub), 'за последний час'),
@@ -945,19 +947,21 @@
     render: function (out, ctx) {
       return request('/v1/admin/groups').then(function (r) {
         var groups = arr(r.groups).map(function (g) { return JSON.parse(JSON.stringify(g)); });
-        var p = panel('Лимиты групп', 'Страниц в день и в месяц (пусто — без лимита), запросов в минуту, устройств на аккаунт и множитель порога защиты. Лимиты «Заблокирован» всегда 0, порог «Ты» — бесконечность.');
+        var p = panel('Лимиты групп', 'ИИ-кредитов в день и в месяц (пусто — без лимита; страница учебника — 10 кредитов, «Объясни иначе» — 1), запросов в минуту, устройств на аккаунт и множитель порога защиты. Лимиты «Заблокирован» всегда 0, порог «Ты» — бесконечность.');
         var body = el('div');
         add(p, body);
         function draw() {
           clear(body);
-          var t = table(['Группа', 'В день', 'В месяц', 'В минуту', 'Устройств', 'Порог ×', 'Блок с подтв.', '']);
+          var t = table(['Группа', 'Кредитов в день', 'Кредитов в месяц', 'В минуту', 'Устройств', 'Порог ×', 'Блок с подтв.', '']);
           groups.forEach(function (g, idx) {
             var fixed = g.id === 'blocked';
             var title = inp('text', { value: g.title, maxlength: 40, 'aria-label': 'Название' });
             title.addEventListener('input', function () { g.title = title.value; });
-            var limit = function (key, nullable, max) {
-              var i = inp('number', { min: 0, max: max, step: 1, value: g[key] == null ? '' : g[key], placeholder: nullable ? '∞' : '', disabled: fixed, inputmode: 'numeric', 'aria-label': key });
-              i.addEventListener('input', function () { g[key] = i.value === '' && nullable ? null : Number(i.value); });
+            // Сервер хранит лимиты в прежних «страницах» (1 страница = CREDITS кредитов) — здесь показываем и вводим кредиты.
+            var limit = function (key, nullable, max, k) {
+              k = k || 1;
+              var i = inp('number', { min: 0, max: max * k, step: 1, value: g[key] == null ? '' : Math.round(g[key] * k * 10) / 10, placeholder: nullable ? '∞' : '', disabled: fixed, inputmode: 'numeric', 'aria-label': key });
+              i.addEventListener('input', function () { g[key] = i.value === '' && nullable ? null : Number(i.value) / k; });
               return add(el('td'), i);
             };
             var gf = g.id === 'owner'
@@ -968,7 +972,7 @@
             cb.addEventListener('change', function () { g.blockNeedsConfirm = cb.checked; });
             var acts = el('td', 'acts');
             if (/^g_/.test(g.id)) acts.appendChild(btn('Убрать', 'btn-ghost btn-sm', function () { groups.splice(idx, 1); draw(); }));
-            add(t.body, add(el('tr'), add(el('td'), title, el('span', 'sub mono', g.id)), limit('perDay', true, 100000), limit('perMonth', true, 100000), limit('perMinute', false, 600), limit('devices', false, 20), gf, add(el('td'), cb), acts));
+            add(t.body, add(el('tr'), add(el('td'), title, el('span', 'sub mono', g.id)), limit('perDay', true, 100000, CREDITS), limit('perMonth', true, 100000, CREDITS), limit('perMinute', false, 600), limit('devices', false, 20), gf, add(el('td'), cb), acts));
           });
           add(body, t.wrap);
         }
@@ -1294,15 +1298,15 @@
           var bt = d.byTask && typeof d.byTask === 'object' ? d.byTask : {};
           Object.keys(bt).forEach(function (k) { var x = tasks[k] || (tasks[k] = { rub: 0, requests: 0 }); x.rub += num(bt[k] && bt[k].rub); x.requests += num(bt[k] && bt[k].requests); });
         });
-        add(p, add(el('div', 'kpis'), kpi(fmtRub(tot.rub), 'за ' + self.days + ' ' + plural(self.days, ['день', 'дня', 'дней'])), kpi(fmtN(tot.pages), 'страниц'), kpi(fmtN(tot.requests), 'запросов'), kpi(fmtRub(list.length ? tot.rub / list.length : 0), 'в среднем за день с расходом')));
+        add(p, add(el('div', 'kpis'), kpi(fmtRub(tot.rub), 'за ' + self.days + ' ' + plural(self.days, ['день', 'дня', 'дней'])), kpi(fmtN(tot.pages * CREDITS), 'кредитов по цене'), kpi(fmtN(tot.requests), 'запросов'), kpi(fmtRub(list.length ? tot.rub / list.length : 0), 'в среднем за день с расходом')));
         if (!list.length) { add(p, el('p', 'empty', 'За этот срок расхода не было.')); out.appendChild(p); return; }
         var max = Math.max.apply(null, list.map(function (d) { return num(d.rub); }).concat([0.000001]));
         add(p, el('h3', null, 'По дням'));
-        var t = table(['День', '₽', 'Страниц', 'Запросов', ''], [1, 2, 3]);
+        var t = table(['День', '₽', 'Кредитов', 'Запросов', ''], [1, 2, 3]);
         list.slice().reverse().forEach(function (d) {
           var bar = el('div', 'hbar');
           bar.style.width = Math.max(1, num(d.rub) / max * 100).toFixed(1) + '%';
-          add(t.body, add(el('tr'), td(str(d.day, 10), 'mono'), td(fmtRub(d.rub), 'num'), td(fmtN(d.pages), 'num'), td(fmtN(d.requests), 'num'), add(el('td', 'bar-cell'), bar)));
+          add(t.body, add(el('tr'), td(str(d.day, 10), 'mono'), td(fmtRub(d.rub), 'num'), td(fmtN(num(d.pages) * CREDITS), 'num'), td(fmtN(d.requests), 'num'), add(el('td', 'bar-cell'), bar)));
         });
         add(p, t.wrap, el('h3', null, 'По задачам'));
         var t2 = table(['Задача', '₽', 'Запросов', 'Доля'], [1, 2, 3]);

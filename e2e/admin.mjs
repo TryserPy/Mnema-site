@@ -470,6 +470,14 @@ try {
     await page.locator('tr', { hasText: 'g***@mail.example.com' }).locator('select').selectOption('tester');
     await page.locator('#view-msg', { hasText: 'Группа' }).waitFor();
     okIf(st.accounts.find((a) => a.id === 'acc_1').group === 'tester', 'группа ученика изменена');
+    // лимиты групп — в ИИ-кредитах (сервер хранит прежние «страницы»: 1 = 10 кредитов)
+    await go(page, 'Лимиты');
+    const day = page.locator('tr', { has: page.locator('span.sub.mono', { hasText: /^student$/ }) }).locator('input[aria-label="perDay"]');
+    okIf((await day.inputValue()) === '300', 'лимит ученика показан в кредитах: 300 в день');
+    await day.fill('350');
+    await page.getByRole('button', { name: 'Сохранить лимиты' }).click();
+    await page.locator('#view-msg', { hasText: 'Лимиты' }).waitFor().catch(() => {});
+    okIf(st.groups.find((g) => g.id === 'student').perDay === 35, 'сохранение уходит на сервер в прежних страницах (35)');
 
     // приглашение
     await go(page, 'Тестировщики');
