@@ -1,0 +1,1 @@
+import{i as e}from"./App-C7JSuRot.js";export{e as linkRoute};
