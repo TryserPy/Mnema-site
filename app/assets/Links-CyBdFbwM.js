@@ -1,0 +1,1 @@
+import{i as e}from"./App-CdoV711t.js";export{e as linkRoute};
