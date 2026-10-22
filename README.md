@@ -56,6 +56,19 @@ python3 -m http.server 8000   # или любой другой статичес�
   хранилище: перенеси данные файлом-копией («Настройки → Данные»).
 - Ссылки «Открыть онлайн» на сайте ведут на `app/` (`WEBAPP` в `js/app.js` и `js/mobile.js`).
 
+## Проверка на телефоне
+
+`tests/mobile-audit.mjs` проходит по вкладкам мобильной версии на 320, 360, 390 и 430 px: нет прокрутки вбок,
+зоны нажатия не меньше 44 px (с учётом невидимой зоны `::before`), шторка целиком на экране, axe-core без
+серьёзных нарушений, без ошибок страницы.
+
+```bash
+python3 -m http.server 8088 &
+NODE_PATH=../Mnema/node_modules node tests/mobile-audit.mjs   # Playwright и @axe-core/playwright из репозитория Mnema
+```
+
+Слова на сайте — те же, что в приложении: словарь интерфейса лежит в репозитории Mnema, `docs/glossary.md`.
+
 ## Публикация
 
 GitHub Pages из ветки: *Settings → Pages → Deploy from a branch → `main` / `/ (root)`*.

@@ -440,3 +440,21 @@ html,body{margin:0;background:#0A0B0F}
 /* заголовок экрана не наезжает на кнопку «Назад» */
 .lback{max-width:104px}
 .lbar-title{left:108px;right:108px}
+/* ---------- 1.34: доступность и цели нажатия (tests/mobile-audit.mjs) ---------- */
+/* «.stage button{color:inherit}» перебивал белый текст у кнопок-«пилюль»: на синем был тёмный текст (2,85:1). */
+.stage .pill-btn,.stage .cdot{color:#fff}
+.stage .pill-btn{font-size:14px}
+/* Метка на обороте карточки и «Помню N» — контраст 4,5:1. */
+.swf.back .tag{background:rgba(0,0,0,.2)}
+.stage .counter [data-cnt-know]{color:color-mix(in srgb,var(--good) 78%,var(--ink)) !important}
+/* Маленькие кнопки — с невидимой зоной нажатия не меньше 44 px: точки на кривой и переключатели. */
+.cdot::before,.switch::before{content:'';position:absolute;inset:-8px;border-radius:inherit}
+.switch::before{inset:-7px -4px}
+/* Ленты, которые листаются вбок, видно, когда на них фокус с клавиатуры. */
+.hs:focus-visible,.car:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:12px}
+/* Кнопки ниже 44 px (пилюли фильтров, «Скачать», плашка версии, логотип) — та же невидимая зона нажатия. */
+.stage :is(.pill-btn,.pill,.eyebrow,.brand){position:relative}
+.stage :is(.pill-btn,.pill,.eyebrow)::before,.stage .brand::before{content:'';position:absolute;inset:-5px -2px;border-radius:inherit}
+.stage .eyebrow::before{inset:-6px -2px}
+.stage .brand::before{inset:-2px}
+.hero .primary .tchip,.btn.primary .tchip{background:rgba(0,0,0,.22)}

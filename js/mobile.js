@@ -187,9 +187,9 @@
         '<button type="button" class="btn ghost wide" data-act="download" style="margin-top: 8px">' + ICON.dl(20) + 'Скачать приложение</button>' +
         '<p class="webnote" style="margin-top: 10px; text-align: center">Онлайн-версия — только для тестов: данные остаются в этом браузере и могут пропасть. Для постоянной учёбы — Windows, Linux или Android.</p>' +
       '</section>' +
-      '<div class="hs" style="margin-top: 16px"><span class="fact">Windows, Linux и Android</span><span class="fact">Без аккаунта</span><span class="fact">Без рекламы</span><span class="fact">Работает офлайн</span></div>' +
+      '<div class="hs" style="margin-top: 16px" tabindex="0" role="region" aria-label="Коротко о Refrain"><span class="fact">Windows, Linux и Android</span><span class="fact">Без аккаунта</span><span class="fact">Без рекламы</span><span class="fact">Работает офлайн</span></div>' +
 
-      '<section class="sec" style="padding-top: 90px; padding-bottom: 14px"><p class="words" data-words aria-label="' + esc(D.words) + '">' + words + '</p></section>' +
+      '<section class="sec" style="padding-top: 90px; padding-bottom: 14px"><p class="words" data-words role="img" aria-label="' + esc(D.words) + '">' + words + '</p></section>' +
 
       '<section class="sec" data-reveal><div class="kicker">Сегодня</div><h2 class="serif sec-h">Одна кнопка. Остальное — расписание.</h2>' +
         '<p class="sec-p">Скажи, сколько у тебя минут, — Refrain наберёт ровно столько карточек.</p>' +
@@ -201,7 +201,7 @@
       '</section>' +
 
       '<section class="sec" data-reveal><div class="kicker">Как это работает</div><h2 class="serif sec-h">Четыре шага. Листай →</h2>' +
-        '<div class="car" data-car style="margin-top: 14px">' +
+        '<div class="car" data-car style="margin-top: 14px" tabindex="0" role="region" aria-label="Как это работает: листай вбок">' +
           '<article class="car-card" data-car-card><div class="il"><div class="pg"><div class="scan"></div><i style="width: 70%; height: 9px; background: #CFC6B3"></i><i></i><i style="width: 92%"></i><i style="width: 84%"></i><i style="width: 60%"></i></div><span class="vf a"></span><span class="vf b"></span><span class="vf c"></span><span class="vf d"></span></div>' +
             '<span class="mono small">01 / 04</span><h3 class="serif">Сфотографируй параграф</h3><p>Refrain распознаёт страницы даже без интернета: находит жирное, рисунки и рамки «Запомните».</p></article>' +
           '<article class="car-card" data-car-card><div class="il"><div class="pg"><i style="width: 60%; height: 9px; background: #CFC6B3"></i><i style="width: 100%"></i><span class="hl" style="width: 70%"></span><i style="width: 90%"></i><span class="hl" style="width: 45%"></span><i style="width: 80%"></i><span class="hl" style="width: 60%"></span></div></div>' +
