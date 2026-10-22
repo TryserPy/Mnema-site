@@ -8,7 +8,7 @@
   var RELEASES = 'https://github.com/' + REPO + '/releases/latest';
   // Веб-версия приложения лежит рядом с сайтом (папка app/): запускается в браузере и ставится как приложение, в том числе на iPhone и iPad.
   var WEBAPP = 'app/';
-  var FALLBACK_VER = '1.29.0';
+  var FALLBACK_VER = '1.34.0';
   var STYLE_SAMPLE = '{\n  "kind": "refrain-style",\n  "formatVersion": 1,\n  "name": "Стикеры + пастельные оценки",\n  "description": "Карточки как жёлтые стикеры",\n  "author": "Я",\n  "version": "1.0",\n  "css": ".review-card { background: #FFF4A8 !important; color: #2B2610 !important; transform: rotate(-0.6deg); } .grade.good { background: #CFF1DC; color: #1F6B43; }"\n}';
 
   // документация та же, что на компьютере, но без интерактивных конструкторов
@@ -172,7 +172,7 @@
 
     return '<div class="screen">' +
       '<section class="hero">' +
-        '<button type="button" class="eyebrow" data-act="push" data-arg="updates"><b>1.29</b><span>Новое: Linux, стили и Markdown</span><span aria-hidden="true">›</span></button>' +
+        '<button type="button" class="eyebrow" data-act="push" data-arg="updates"><b>1.34</b><span>Новое: удобно на телефоне и масштаб</span><span aria-hidden="true">›</span></button>' +
         '<h1 class="serif hero-h">Запоминай больше.<br><span class="accent-text">Учи меньше.</span></h1>' +
         '<p class="hero-p">Параграф → конспект → карточки → повторения по расписанию. Попробуй — смахни карточку.</p>' +
         '<div class="sw-wrap"><div class="sw-area">' + deck + '<div data-deck-done></div></div>' +

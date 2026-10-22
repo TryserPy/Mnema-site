@@ -7,7 +7,7 @@
   var DOCS = docsData();
   var REPO = 'TryserPy/Mnema';
   var RELEASES = 'https://github.com/' + REPO + '/releases/latest';
-  var FALLBACK_VER = '1.29.0';
+  var FALLBACK_VER = '1.34.0';
   // Веб-версия приложения лежит рядом с сайтом (папка app/): запускается в браузере и ставится как приложение на ПК, Android, iPhone и iPad.
   var WEBAPP = 'app/';
 
@@ -262,7 +262,7 @@
       '<section class="wrap hero" data-hero>' +
         '<div class="hero-grid">' +
           '<div class="hero-copy">' +
-            '<a class="eyebrow" href="#/updates"><b>1.29</b><span>Новое: Linux, стили и экспорт в Markdown</span><span aria-hidden="true">›</span></a>' +
+            '<a class="eyebrow" href="#/updates"><b>1.34</b><span>Новое: удобно на телефоне, масштаб и подсказки</span><span aria-hidden="true">›</span></a>' +
             '<h1 class="serif h-display">Запоминай больше.<br><span class="accent-text">Учи меньше.</span></h1>' +
             '<p class="lead">Параграф учебника → конспект → карточки → повторения по расписанию. Refrain встраивает в учёбу то, что по исследованиям действительно работает.</p>' +
             '<div style="display: flex; flex-wrap: wrap; gap: 12px">' +
