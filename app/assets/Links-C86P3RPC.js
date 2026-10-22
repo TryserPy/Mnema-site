@@ -1,1 +1,0 @@
-import{i as e}from"./App-DFTMnex-.js";export{e as linkRoute};

@@ -1,0 +1,1 @@
+import{i as e}from"./App-DqrUDOh7.js";export{e as linkRoute};
